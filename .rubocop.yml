@@ -1,8 +1,37 @@
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 2.5
+  NewCops: enable
+  Exclude:
+    - 'bin/**/*'
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'db/**/*'
+    - 'node_modules/**/*'
 
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+# String literals
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
+
+# Enforce documentation for public interfaces
+Style/Documentation:
+  Enabled: true
+
+# Enforce good naming conventions
+Naming/FileName:
+  Enabled: true
+
+# Limitations for block length, line length
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - '*.gemspec'
+
+Layout/LineLength:
+  Max: 120

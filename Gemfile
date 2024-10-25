@@ -5,8 +5,18 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in skeleton_loader.gemspec
 gemspec
 
-gem "rake", "~> 13.0"
+group :development do
+  gem "yard", "~> 0.9.26"
+  gem "rubocop", "~> 1.21"
+  gem "rubocop-rails"
+  gem "rubocop-rspec"
+end
 
-gem "rspec", "~> 3.0"
+group :development, :test do
+  gem "pry", "~> 0.13.1"
+  gem "rake", "~> 13.0"
+end
 
-gem "rubocop", "~> 1.21"
+group :test do
+  gem "rspec", "~> 3.0"
+end
