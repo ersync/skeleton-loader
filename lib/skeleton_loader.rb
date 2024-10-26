@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 require "skeleton_loader/version"
 require "skeleton_loader/configuration"
+require "skeleton_loader/view_helpers"
+require 'skeleton_loader/template_path_finder'
+require 'skeleton_loader/template_renderer'
+require 'skeleton_loader/skeleton_content_generator'
 require "skeleton_loader/engine"
 
 require 'action_view'
