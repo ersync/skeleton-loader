@@ -1,0 +1,46 @@
+/* Shimmer effect */
+.shimmer-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.shimmer {
+    filter: blur(6px);
+    height: 100%;
+}
+
+@keyframes shimmer-loading {
+    0% {
+        transform: translateX(120%);
+    }
+    50% {
+        transform: translateX(50%);
+    }
+    100% {
+        transform: translateX(-150%);
+    }
+}
+
+.shimmer-fast .shimmer-wrapper {
+    animation: shimmer-loading 1.8s infinite;
+}
+
+.shimmer-fast .shimmer {
+    width: 35%;
+    background-color: hsla(0, 0%, 100%, 0.3);
+    transform: skewX(-20deg);
+}
+
+.shimmer-slow .shimmer-wrapper {
+    animation: shimmer-loading 2.7s infinite;
+}
+
+.shimmer-slow .shimmer {
+    width: 32%;
+    background-color: hsla(0, 0%, 100%, 0.05);
+    transform: skewX(-10deg);
+}
