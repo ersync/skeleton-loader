@@ -1,0 +1,62 @@
+version: 2.1
+
+orbs:
+  ruby: circleci/ruby@2.0
+
+jobs:
+  build:
+    docker:
+      - image: cimg/ruby:2.7.7
+    steps:
+      - checkout
+      - run:
+          name: Update RubyGems
+          command: |
+            gem update --system 3.3.26
+            gem --version
+      - run:
+          name: Setup Bundler
+          command: |
+            gem uninstall bundler --all
+            gem install bundler -v 2.3.26
+            bundle --version
+      - run:
+          name: Add platform to Gemfile.lock
+          command: |
+            if [ -f Gemfile.lock ]; then
+              bundle lock --add-platform x86_64-linux
+            else
+              bundle install
+              bundle lock --add-platform x86_64-linux
+            fi
+      - restore_cache:
+          keys:
+            - v1-gems-{{ checksum "Gemfile.lock" }}
+            - v1-gems-
+      - run:
+          name: Install dependencies
+          command: |
+            bundle config set --local deployment 'true'
+            bundle config set --local path 'vendor/bundle'
+            bundle _2.3.26_ install
+      - save_cache:
+          key: v1-gems-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Run RSpec
+          command: |
+            bundle _2.3.26_ exec rspec --format progress \
+                            --format RspecJunitFormatter \
+                            --out /tmp/test-results/rspec.xml
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build

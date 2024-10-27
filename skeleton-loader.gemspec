@@ -3,7 +3,7 @@
 require_relative "lib/skeleton_loader/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "skeleton_loader"
+  spec.name = "skeleton-loader"
   spec.version = SkeletonLoader::VERSION
   spec.authors = ["Emad Rahimi"]
   spec.email = ["121079771+ersync@users.noreply.github.com"]
