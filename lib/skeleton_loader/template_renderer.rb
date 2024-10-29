@@ -1,4 +1,10 @@
+# frozen_string_literal: true
+
 module SkeletonLoader
+  #
+  # This class handles rendering templates for skeleton loaders. It retrieves
+  # template files and prepares them for display as placeholders.
+  #
   class TemplateRenderer
     def self.render(template_path, options = {})
       new(template_path, options).render

@@ -44,11 +44,15 @@ jobs:
           paths:
             - vendor/bundle
       - run:
+          name: Run RuboCop
+          command: bundle _2.3.26_ exec rubocop
+      - run:
           name: Run RSpec
           command: |
             bundle _2.3.26_ exec rspec --format progress \
                             --format RspecJunitFormatter \
                             --out /tmp/test-results/rspec.xml
+
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:

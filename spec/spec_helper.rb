@@ -1,8 +1,9 @@
 # frozen_string_literal: true
-ENV['RAILS_ENV'] ||= 'test'
-require 'rails'
-require 'action_controller'
-require 'rails/generators'
+
+ENV["RAILS_ENV"] ||= "test"
+require "rails"
+require "action_controller"
+require "rails/generators"
 require "skeleton_loader"
 require "pry"
 

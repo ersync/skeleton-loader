@@ -1,23 +1,24 @@
-require 'spec_helper'
-require 'skeleton_loader/view_helpers'
-require 'skeleton_loader/engine'
+# frozen_string_literal: true
+
+# rubocop:disable RSpec/MultipleMemoizedHelpers
+
+require "skeleton_loader/view_helpers"
+require "skeleton_loader/engine"
+require "pathname" # Ensure you have this line to use Pathname
 
 RSpec.describe SkeletonLoader::Engine do
   let(:asset_paths) { [] }
   let(:precompile_array) { [] }
 
   let(:assets) do
-    double('Assets').tap do |assets|
-      allow(assets).to receive(:paths).and_return(asset_paths)
-      allow(assets).to receive(:precompile).and_return(precompile_array)
+    double("Assets").tap do |assets|
+      allow(assets).to receive_messages(paths: asset_paths, precompile: precompile_array)
       allow(assets).to receive(:precompile=) { |array| precompile_array.concat(array) }
     end
   end
 
-  let(:app) do
-    double("Rails app", config: double("Config", assets: assets))
-  end
-
+  let(:config) { double("Config", assets: assets) }
+  let(:app) { double("Rails::Application", config: config) }
   let(:engine) { described_class.instance }
 
   describe "initialization" do
@@ -31,37 +32,41 @@ RSpec.describe SkeletonLoader::Engine do
   end
 
   describe "asset configuration" do
-    before do
-      allow(app.config.assets.precompile).to receive(:<<).with("skeleton_loader.css").and_return(true)
-      allow(app.config.assets.precompile).to receive(:<<).with("skeleton_loader.js").and_return(true)
+    let(:initializer) { engine.initializers.find { |i| i.name == "skeleton_loader.assets" } }
 
-      initializer = engine.initializers.find { |i| i.name == "skeleton_loader.assets" }
-      initializer.run(app)
+    before { initializer.run(app) }
+
+    context "when adding asset paths" do
+      it "includes JavaScript asset path" do
+        js_path = Pathname.new(engine.root.join("app", "assets", "javascripts").to_s)
+        expect(asset_paths).to include(js_path)
+      end
+
+      it "includes stylesheet asset path" do
+        css_path = Pathname.new(engine.root.join("app", "assets", "stylesheets").to_s)
+        expect(asset_paths).to include(css_path)
+      end
     end
 
-    it "adds JavaScript and stylesheet asset paths" do
-      expected_paths = [
-        engine.root.join("app", "assets", "javascripts").to_s,
-        engine.root.join("app", "assets", "stylesheets").to_s
-      ]
-      actual_paths = app.config.assets.paths.map(&:to_s)
+    context "when precompiling assets" do
+      it "includes skeleton_loader.css in precompilation" do
+        expect(precompile_array).to include("skeleton_loader.css")
+      end
 
-      expect(actual_paths).to include(*expected_paths)
-    end
-
-    it "precompiles specified assets" do
-      expect(app.config.assets.precompile).to include("skeleton_loader.css", "skeleton_loader.js")
+      it "includes skeleton_loader.js in precompilation" do
+        expect(precompile_array).to include("skeleton_loader.js")
+      end
     end
   end
 
   describe "view helper configuration" do
     let(:view_context) { Class.new }
+    let(:initializer) { engine.initializers.find { |i| i.name == "skeleton_loader.view_helpers" } }
 
     before do
       allow(ActiveSupport).to receive(:on_load).with(:action_view) do |&block|
         view_context.class_eval(&block)
       end
-      initializer = engine.initializers.find { |i| i.name == "skeleton_loader.view_helpers" }
       initializer.run(app)
     end
 
@@ -70,3 +75,4 @@ RSpec.describe SkeletonLoader::Engine do
     end
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

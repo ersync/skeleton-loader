@@ -35,3 +35,10 @@ Metrics/BlockLength:
 
 Layout/LineLength:
   Max: 120
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+# Disable RSpec/VerifiedDoubles
+RSpec/VerifiedDoubles:
+  Enabled: false

@@ -6,16 +6,16 @@ source "https://rubygems.org"
 gemspec
 
 group :development do
-  gem "yard", "~> 0.9.26"
   gem "rubocop", "~> 1.21"
   gem "rubocop-rails"
   gem "rubocop-rspec"
+  gem "yard", "~> 0.9.26"
 end
 
 group :development, :test do
   gem "pry", "~> 0.14.2"
   gem "rake", "~> 13.0"
-  gem 'rspec_junit_formatter'
+  gem "rspec_junit_formatter"
 end
 
 group :test do

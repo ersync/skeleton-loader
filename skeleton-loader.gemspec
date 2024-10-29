@@ -30,8 +30,5 @@ Gem::Specification.new do |spec|
   # Dependencies
   spec.add_dependency "rails", ">= 5.0.0"
 
-  # Development dependencies
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rubocop-rails"
-  spec.add_development_dependency "rubocop-rspec"
+  spec.metadata["rubygems_mfa_required"] = "true"
 end

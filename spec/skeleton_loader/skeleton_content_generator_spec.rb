@@ -1,4 +1,4 @@
-require "spec_helper"
+# frozen_string_literal: true
 
 RSpec.describe SkeletonLoader::SkeletonContentGenerator do
   describe ".generate" do
@@ -18,9 +18,13 @@ RSpec.describe SkeletonLoader::SkeletonContentGenerator do
         allow(SkeletonLoader::TemplateRenderer).to receive(:render).and_return("Rendered content")
       end
 
-      it "finds and renders template" do
-        result = described_class.generate(type: "card")
+      it "finds the correct template" do
+        described_class.generate(type: "card")
         expect(SkeletonLoader::TemplatePathFinder).to have_received(:find).with("card")
+      end
+
+      it "renders the template content" do
+        described_class.generate(type: "card")
         expect(SkeletonLoader::TemplateRenderer).to have_received(:render)
       end
     end

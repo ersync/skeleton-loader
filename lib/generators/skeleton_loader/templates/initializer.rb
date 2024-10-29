@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Configure SkeletonLoader
 SkeletonLoader.configure do |config|
   # Example configuration options
