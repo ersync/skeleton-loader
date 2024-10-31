@@ -13,8 +13,12 @@ module SkeletonLoader
     def initialize(template_path, options = {})
       @template_path = template_path
 
+      template_name = extract_template_name(template_path)
+
       config = SkeletonLoader.configuration.to_h
-      @options = config.merge(options)
+      template_defaults = SkeletonLoader::TemplateDefaults.for_template(template_name)
+
+      @options = config.merge(template_defaults).merge(options)
 
       @options.each do |key, value|
         instance_variable_set("@#{key}", value)
@@ -26,6 +30,14 @@ module SkeletonLoader
       erb = ERB.new(template)
       result = erb.result(binding)
       ActionController::Base.new.helpers.raw(result)
+    end
+
+    private
+
+    def extract_template_name(path)
+      filename = File.basename(path, ".*")
+      filename = filename.delete_prefix("_")
+      filename.split(".").first
     end
   end
 end
