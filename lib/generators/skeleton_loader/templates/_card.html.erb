@@ -1,7 +1,48 @@
-<div class="skeleton-loader rounded-lg w-full h-48 mb-4">
-  <div class="h-32 rounded-t-lg"></div>
-  <div class="p-4">
-    <div class="h-4 w-3/4 mb-2"></div>
-    <div class="h-4 w-1/2"></div>
-  </div>
-</div>
+<ul class="flex"
+    style="
+    margin:<%= @margin %>;
+      padding:<%= @padding %>;
+    ">
+  <% @item_count.times do %>
+    <li>
+      <div class="overflow-hidden shadow-light"
+           style="
+           width:<%= @width %>;
+             height:<%= @height %>;
+             <%= "border: #{@border_width} solid #{@border_color};" if @border_color.present? %>;
+             border-radius:<%= @border_radius %>;
+           "
+      >
+
+        <div class="<%= @animation_enabled ? "#{@animation_type}" : '' %> h-[175px] relative"
+             style="background-color: <%= @background_color %>">
+          <% if @animation_enabled %>
+            <div class="h-full">
+              <div style="animation-duration: <%= @animation_duration %>"></div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="mt-2.5 mx-2.5 text-left">
+          <div class="<%= @animation_enabled ? "#{@animation_type}" : '' %> h-5 rounded w-3/4 mb-2 relative"
+               style="background-color: <%= @background_color %>">
+            <% if @animation_enabled %>
+              <div class="h-full">
+                <div style="animation-duration: <%= @animation_duration %>"></div>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="<%= @animation_enabled ? "#{@animation_type}" : '' %> h-4 rounded w-1/2 relative"
+               style="background-color: <%= @background_color %>">
+            <% if @animation_enabled %>
+              <div class="h-full">
+                <div style="animation-duration: <%= @animation_duration %>"></div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </li>
+  <% end %>
+</ul>

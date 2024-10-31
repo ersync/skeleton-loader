@@ -1,30 +1,6 @@
-# Commit Message:
-"""
-Add TemplateDefaults class for predefined skeleton styles
+# frozen_string_literal: true
 
-This commit introduces a TemplateDefaults class that provides default styling
-configurations for various pre-built skeleton loader templates. The templates
-include:
-
-- Card template with fixed dimensions
-- Comment template with responsive width
-- Gallery template for image placeholders
-- Paragraph template for text blocks
-- Product template for e-commerce items
-
-Each template comes with predefined styles for:
-- Dimensions (width/height)
-- Spacing (padding/margin)
-- Visual styles (background, border-radius)
-- Animation properties
-
-The defaults are immutable (frozen) to prevent accidental modifications.
-"""
-
-# RSpec Tests:
-# spec/lib/skeleton_loader/template_defaults_spec.rb
-
-require "spec_helper"
+# rubocop:disable RSpec/ExampleLength
 
 RSpec.describe SkeletonLoader::TemplateDefaults do
   describe ".for_template" do
@@ -85,7 +61,7 @@ RSpec.describe SkeletonLoader::TemplateDefaults do
       end
 
       it "returns frozen hash for all templates" do
-        [:card, :comment, :gallery, :paragraph, :product].each do |template|
+        %i[card comment gallery paragraph product].each do |template|
           expect(described_class.for_template(template)).to be_frozen
         end
       end
@@ -120,9 +96,10 @@ RSpec.describe SkeletonLoader::TemplateDefaults do
 
     it "returns frozen values for each template" do
       defaults = described_class.send(:template_defaults)
-      defaults.values.each do |template_defaults|
+      defaults.each_value do |template_defaults|
         expect(template_defaults).to be_frozen
       end
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength

@@ -11,10 +11,6 @@ module SkeletonLoader
       def copy_templates
         directory ".", "app/views/skeleton_loader"
       end
-
-      def create_initializer
-        template "initializer.rb", "config/initializers/skeleton_loader.rb"
-      end
     end
   end
 end

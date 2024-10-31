@@ -41,7 +41,7 @@ RSpec.describe SkeletonLoader::Configuration do
     end
 
     it "sets the default animation type" do
-      expect(configuration.animation_type).to eq("shine")
+      expect(configuration.animation_type).to eq("animation-pulse")
     end
 
     it "sets the default padding for spacing" do

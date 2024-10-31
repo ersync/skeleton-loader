@@ -62,13 +62,15 @@ module SkeletonLoader
     def set_style_defaults
       @background_color = "#e0e0e0"
       @highlight_color = "#f0f0f0"
+      @border_color = nil
+      @border_width = "1px"
       @border_radius = "4px"
     end
 
     def set_animation_defaults
       @animation_enabled = true
       @animation_duration = "1.5s"
-      @animation_type = "shine"
+      @animation_type = "animation-pulse"
     end
 
     def set_spacing_defaults

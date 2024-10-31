@@ -26,14 +26,24 @@ RSpec.describe SkeletonLoader::Generators::InstallGenerator, type: :generator do
                       "Expected _card.html.erb template to be created"
     end
 
-    it "creates the _cast_skeleton.html.erb template" do
-      expect(File).to exist(File.join(destination_root, "app/views/skeleton_loader/_cast_skeleton.html.erb")),
-                      "Expected _cast_skeleton.html.erb template to be created"
+    it "creates the _comment.html.erb template" do
+      expect(File).to exist(File.join(destination_root, "app/views/skeleton_loader/_comment.html.erb")),
+                      "Expected _comment.html.erb template to be created"
     end
 
-    it "creates the initializer in config/initializers" do
-      expect(File).to exist(File.join(destination_root, "config/initializers/skeleton_loader.rb")),
-                      "Expected initializer to be created in config/initializers"
+    it "creates the _gallery.html.erb template" do
+      expect(File).to exist(File.join(destination_root, "app/views/skeleton_loader/_gallery.html.erb")),
+                      "Expected _gallery.html.erb template to be created"
+    end
+
+    it "creates the _paragraph.html.erb template" do
+      expect(File).to exist(File.join(destination_root, "app/views/skeleton_loader/_paragraph.html.erb")),
+                      "Expected _paragraph.html.erb template to be created"
+    end
+
+    it "creates the _product.html.erb template" do
+      expect(File).to exist(File.join(destination_root, "app/views/skeleton_loader/_product.html.erb")),
+                      "Expected _product.html.erb template to be created"
     end
   end
 end

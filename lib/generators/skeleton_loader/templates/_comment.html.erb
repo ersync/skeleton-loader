@@ -1,0 +1,37 @@
+<div class="max-w-2xl mx-auto"
+     style="
+     width:<%= @width %>;
+       padding:<%= @padding %>;
+       height:<%= @height %>;
+       <%= "border: #{@border_width} solid #{@border_color};" if @border_color.present? %>;
+       border-radius:<%= @border_radius %>;
+     "
+>
+  <div class="rounded-lg p-2 mb-4" style="margin:<%= @margin %>;">
+    <div class="w-full flex items-start space-x-4">
+
+      <div class="rounded-full h-12 w-12 <%= @animation_enabled ? "#{@animation_type}" : '' %>"
+           style="background-color:<%= @background_color %>;">
+      </div>
+
+      <div class="flex-1 space-y-2" style="gap:<%= @gap %>;">
+
+        <div class="h-4 rounded w-1/4 <%= @animation_enabled ? "#{@animation_type}" : '' %>"
+             style="background-color:<%= @background_color %>;">
+        </div>
+
+        <div class="space-y-2">
+          <div class="h-4 rounded <%= @animation_enabled ? "#{@animation_type}" : '' %>"
+               style="background-color:<%= @background_color %>;">
+          </div>
+          <div class="h-4 rounded w-5/6 <%= @animation_enabled ? "#{@animation_type}" : '' %>"
+               style="background-color:<%= @background_color %>;">
+          </div>
+          <div class="h-4 rounded w-2/3 <%= @animation_enabled ? "#{@animation_type}" : '' %>"
+               style="background-color:<%= @background_color %>;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

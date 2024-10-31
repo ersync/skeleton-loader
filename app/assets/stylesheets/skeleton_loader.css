@@ -1,46 +1,69 @@
-/* Shimmer effect */
-.shimmer-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-.shimmer {
-    filter: blur(6px);
-    height: 100%;
-}
-
-@keyframes shimmer-loading {
+@keyframes shimmerDiagonal {
     0% {
-        transform: translateX(120%);
+        transform: translateX(550%) skewX(-40deg) translateY(70%);
+        opacity: 1;
+    }
+    40% {
+        transform: translateX(-80%) skewX(-40deg);
+        opacity: 0.7;
     }
     50% {
-        transform: translateX(50%);
+        transform: translateX(-95%) skewX(-40deg);
+        opacity: 0.7;
     }
     100% {
-        transform: translateX(-150%);
+        transform: translateX(-400%) skewX(-5deg) translateY(-70%);
+        opacity: 0.7;
     }
 }
-
-.shimmer-fast .shimmer-wrapper {
-    animation: shimmer-loading 1.8s infinite;
+.animation-shimmer-diagonal::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 150%;
+    width: 40%;
+    background-color: hsla(0, 0%, 100%, 0.55);
+    filter: blur(30px);
+    animation: shimmerDiagonal 2.2s infinite;
+    z-index: 1;
+}
+.animation-shimmer-diagonal {
+    position: relative;
+    overflow: hidden;
 }
 
-.shimmer-fast .shimmer {
-    width: 35%;
-    background-color: hsla(0, 0%, 100%, 0.3);
-    transform: skewX(-20deg);
+
+@keyframes shimmerGradient {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+.animation-shimmer-gradient::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(
+            76deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.2) 20%,
+            rgba(255, 255, 255, 0.5) 60%,
+            rgba(255, 255, 255, 0.2) 80%,
+            rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmerGradient 1.5s infinite;
+}
+.animation-shimmer-gradient {
+    position: relative;
+    overflow: hidden;
 }
 
-.shimmer-slow .shimmer-wrapper {
-    animation: shimmer-loading 2.7s infinite;
-}
 
-.shimmer-slow .shimmer {
-    width: 32%;
-    background-color: hsla(0, 0%, 100%, 0.05);
-    transform: skewX(-10deg);
-}
+

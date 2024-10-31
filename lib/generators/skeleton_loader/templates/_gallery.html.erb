@@ -1,0 +1,21 @@
+<div class="grid grid-cols-3 gap-4"
+     style="
+     width:<%= @width %>;
+       height:<%= @height %>;
+       padding:<%= @padding %>;
+       margin:<%= @margin %>;
+       <%= "border: #{@border_width} solid #{@border_color};" if @border_color.present? %>;
+       border-radius:<%= @border_radius %>;
+     ">
+  <% @item_count.times do %>
+    <div class="shrink-0 h-40 rounded-lg overflow-hidden <%= @animation_enabled ? " #{@animation_type}" : '' %>"
+         style="background-color:<%= @background_color %>;
+           border-radius:<%= @border_radius %>;
+           animation-duration:<%= @animation_duration %>;"
+         aria-label="<%= @aria_label %>">
+      <div class="h-full">
+        <div></div>
+      </div>
+    </div>
+  <% end %>
+</div>
