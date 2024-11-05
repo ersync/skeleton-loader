@@ -1,32 +1,41 @@
-module SkeletonLoader
+# frozen_string_literal: true
 
+module SkeletonLoader
+  # Handles async requests to generate and render loading skeletons
   class SkeletonLoaderController < ApplicationController
     def show
-      type = params[:type]
-      target_id = params[:target_id]
-      options = params[:options] || {}
+      options = process_params || {}
+      content_id = params[:content_id]
+      raise SkeletonLoader::Error, "content_id is required" if content_id.blank?
 
-      raise SkeletonLoader::Error, "target_id is required" if target_id.blank?
+      wrapped_content = SkeletonBuilder.new(
+        type: params[:type], content_id: params[:content_id], options: options
+      ).generate
 
-      # Step 1: Locate the template
-      template_path = SkeletonLoader::TemplatePathFinder.find(type)
-      raise SkeletonLoader::Error, "No template found for type '#{type}'" unless template_path
+      safe_content = ActionController::Base.helpers.sanitize(wrapped_content)
 
-      # Step 2: Render the template with TemplateRenderer
-      skeleton_content = SkeletonLoader::TemplateRenderer.render(template_path, options)
+      render html: safe_content
+    rescue StandardError => e
+      handle_error(e)
+    end
 
-      # Step 3: Wrap in div structure similar to synchronous helper
-      wrapped_content = ActionController::Base.helpers.content_tag(:div, skeleton_content.html_safe,
-        class: "skeleton-loader",
-        data: { target_id: target_id, target_display_type: options[:target_display_type] }
-      )
+    private
 
-      # Render final HTML output
-      render html: wrapped_content
-    rescue SkeletonLoader::Error => e
-      render plain: "Error: #{e.message}", status: :bad_request
+    def process_params
+      params.to_unsafe_h.except(
+        "type",
+        "content_id",
+        "controller",
+        "action",
+        "format"
+      ).transform_keys(&:to_sym)
+    end
+
+    def handle_error(error)
+      render json: {
+        error: error.message,
+        backtrace: error.backtrace
+      }, status: :unprocessable_entity
     end
   end
-
-
 end

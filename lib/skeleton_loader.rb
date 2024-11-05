@@ -7,10 +7,11 @@ require "skeleton_loader/template_path_finder"
 require "skeleton_loader/template_defaults"
 require "skeleton_loader/template_renderer"
 require "skeleton_loader/skeleton_content_generator"
+require "skeleton_loader/skeleton_builder"
 require "skeleton_loader/engine"
 
 require "action_view"
-#
+
 # This module serves as the entry point for the SkeletonLoader gem, which provides
 # configurable skeleton loaders for Rails views. It includes configuration methods,
 # custom error handling, and auto-loading for key classes and helpers.
