@@ -4,37 +4,46 @@ module SkeletonLoader
   # Handles async requests to generate and render loading skeletons
   class SkeletonLoaderController < ApplicationController
     def show
-      options = process_params || {}
       content_id = params[:content_id]
-      raise SkeletonLoader::Error, "content_id is required" if content_id.blank?
-
-      wrapped_content = SkeletonBuilder.new(
-        type: params[:type], content_id: params[:content_id], options: options
-      ).generate
-
-      safe_content = ActionController::Base.helpers.sanitize(wrapped_content)
-
-      render html: safe_content
+      mode = params[:mode]
+      wrapped_content = mode == "custom" ? handle_custom_template(content_id) : handle_predefined_template(content_id)
+      render html: wrapped_content
     rescue StandardError => e
       handle_error(e)
     end
 
     private
 
+    def handle_predefined_template(content_id)
+      options = process_params
+      SkeletonElementGenerator.generate(
+        content_id: content_id,
+        options: options,
+        context: :controller
+      )
+    end
+
+    def handle_custom_template(content_id)
+      markup = params[:markup]
+      SkeletonElementGenerator.generate(
+        content_id: content_id,
+        context: :controller
+      ) { markup }
+    end
+
     def process_params
-      params.to_unsafe_h.except(
-        "type",
-        "content_id",
-        "controller",
-        "action",
-        "format"
-      ).transform_keys(&:to_sym)
+      params.to_unsafe_h
+            .except("content_id", "controller", "action", "format", "mode", "markup")
+            .transform_keys(&:to_sym)
     end
 
     def handle_error(error)
+      Rails.logger.error "SkeletonLoader Error: #{error.message}"
+      Rails.logger.error error.backtrace.join("\n")
+
       render json: {
         error: error.message,
-        backtrace: error.backtrace
+        backtrace: Rails.env.development? ? error.backtrace : []
       }, status: :unprocessable_entity
     end
   end

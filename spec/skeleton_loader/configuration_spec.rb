@@ -1,93 +1,224 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/NestedGroups
+
 RSpec.describe SkeletonLoader::Configuration do
-  let(:configuration) { described_class.new }
+  subject(:config) { described_class.new }
 
-  describe "default values" do
-    it "sets the default layout width" do
-      expect(configuration.width).to eq("100%")
+  describe "initialization" do
+    context "with general defaults" do
+      it "sets scale" do
+        expect(config.scale).to eq(1.0)
+      end
     end
 
-    it "sets the default layout height" do
-      expect(configuration.height).to eq("auto")
+    context "with template defaults" do
+      context "with profile settings" do
+        it "sets profile_width" do
+          expect(config.profile_width).to eq(350)
+        end
+
+        it "sets profile_count" do
+          expect(config.profile_count).to eq(1)
+        end
+
+        it "sets profile_per_row" do
+          expect(config.profile_per_row).to eq(1)
+        end
+      end
+
+      context "with paragraph settings" do
+        it "sets paragraph_width" do
+          expect(config.paragraph_width).to eq(900)
+        end
+
+        it "sets line_count" do
+          expect(config.line_count).to eq(4)
+        end
+      end
+
+      context "with gallery settings" do
+        it "sets gallery_width" do
+          expect(config.gallery_width).to eq(300)
+        end
+
+        it "sets image_count" do
+          expect(config.image_count).to eq(3)
+        end
+
+        it "sets image_per_row" do
+          expect(config.image_per_row).to eq(3)
+        end
+      end
+
+      context "with card settings" do
+        it "sets card_width" do
+          expect(config.card_width).to eq(200)
+        end
+
+        it "sets card_count" do
+          expect(config.card_count).to eq(3)
+        end
+
+        it "sets card_per_row" do
+          expect(config.card_per_row).to eq(3)
+        end
+      end
+
+      context "with product settings" do
+        it "sets product_width" do
+          expect(config.product_width).to eq(320)
+        end
+
+        it "sets product_count" do
+          expect(config.product_count).to eq(3)
+        end
+
+        it "sets product_per_row" do
+          expect(config.product_per_row).to eq(3)
+        end
+      end
     end
 
-    it "sets the default item count in layout" do
-      expect(configuration.item_count).to eq(1)
+    context "with animation defaults" do
+      it "sets animation_type" do
+        expect(config.animation_type).to eq("animation-gradient")
+      end
     end
 
-    it "sets the default target display type for layout" do
-      expect(configuration.target_display_type).to eq("block")
+    context "with security defaults" do
+      it "sets additional_allowed_tags" do
+        expect(config.additional_allowed_tags).to eq([])
+      end
+
+      it "sets additional_allowed_attributes" do
+        expect(config.additional_allowed_attributes).to eq({})
+      end
+
+      it "sets additional_allowed_css_properties" do
+        expect(config.additional_allowed_css_properties).to eq([])
+      end
+    end
+  end
+
+  describe "attribute modification" do
+    context "when modifying general attributes" do
+      it "allows scale modification" do
+        config.scale = 1.5
+        expect(config.scale).to eq(1.5)
+      end
     end
 
-    it "sets the default background color for style" do
-      expect(configuration.background_color).to eq("#e0e0e0")
+    context "when modifying template attributes" do
+      context "when modifying profile settings" do
+        it "allows profile_width modification" do
+          config.profile_width = 400
+          expect(config.profile_width).to eq(400)
+        end
+
+        it "allows profile_count modification" do
+          config.profile_count = 2
+          expect(config.profile_count).to eq(2)
+        end
+
+        it "allows profile_per_row modification" do
+          config.profile_per_row = 2
+          expect(config.profile_per_row).to eq(2)
+        end
+      end
+
+      context "when modifying paragraph settings" do
+        it "allows paragraph_width modification" do
+          config.paragraph_width = 1000
+          expect(config.paragraph_width).to eq(1000)
+        end
+
+        it "allows line_count modification" do
+          config.line_count = 6
+          expect(config.line_count).to eq(6)
+        end
+      end
+
+      context "when modifying gallery settings" do
+        it "allows gallery_width modification" do
+          config.gallery_width = 400
+          expect(config.gallery_width).to eq(400)
+        end
+
+        it "allows image_count modification" do
+          config.image_count = 4
+          expect(config.image_count).to eq(4)
+        end
+
+        it "allows image_per_row modification" do
+          config.image_per_row = 4
+          expect(config.image_per_row).to eq(4)
+        end
+      end
     end
 
-    it "sets the default highlight color for style" do
-      expect(configuration.highlight_color).to eq("#f0f0f0")
+    context "when modifying animation attributes" do
+      it "allows animation_type modification" do
+        config.animation_type = "fade"
+        expect(config.animation_type).to eq("fade")
+      end
     end
 
-    it "sets the default border radius for style" do
-      expect(configuration.border_radius).to eq("4px")
-    end
+    context "when modifying security attributes" do
+      it "allows additional_allowed_tags modification" do
+        tags = %w[div span]
+        config.additional_allowed_tags = tags
+        expect(config.additional_allowed_tags).to eq(tags)
+      end
 
-    it "enables animations by default" do
-      expect(configuration.animation_enabled).to be true
-    end
+      it "allows additional_allowed_attributes modification" do
+        attrs = { "div" => ["class"] }
+        config.additional_allowed_attributes = attrs
+        expect(config.additional_allowed_attributes).to eq(attrs)
+      end
 
-    it "sets the default animation duration" do
-      expect(configuration.animation_duration).to eq("1.5s")
-    end
-
-    it "sets the default animation type" do
-      expect(configuration.animation_type).to eq("animation-pulse")
-    end
-
-    it "sets the default padding for spacing" do
-      expect(configuration.padding).to eq("10px")
-    end
-
-    it "sets the default margin for spacing" do
-      expect(configuration.margin).to eq("0")
-    end
-
-    it "sets the default gap for spacing" do
-      expect(configuration.gap).to eq("10px")
-    end
-
-    it "sets the default content variant" do
-      expect(configuration.content_variant).to eq("text")
-    end
-
-    it "sets the default variant for content" do
-      expect(configuration.variant).to eq("default")
-    end
-
-    it "sets the default template paths for content" do
-      expect(configuration.template_paths).to eq([])
-    end
-
-    it "sets the default aria label for content" do
-      expect(configuration.aria_label).to eq("Loading content")
+      it "allows additional_allowed_css_properties modification" do
+        props = %w[background-color color]
+        config.additional_allowed_css_properties = props
+        expect(config.additional_allowed_css_properties).to eq(props)
+      end
     end
   end
 
   describe "#to_h" do
-    it "converts the configuration to a hash" do
-      expect(configuration.to_h).to be_a(Hash)
+    let(:expected_keys) do
+      %i[
+        scale
+        template_paths
+        profile_width profile_count profile_per_row
+        paragraph_width line_count
+        gallery_width image_count image_per_row
+        card_width card_count card_per_row
+        product_width product_count product_per_row
+        animation_type
+        additional_allowed_tags
+        additional_allowed_attributes
+        additional_allowed_css_properties
+      ]
     end
 
-    it "includes the correct width in the hash" do
-      expect(configuration.to_h[:width]).to eq("100%")
+    it "converts configuration to hash with correct keys" do
+      result = config.to_h
+      expect(result.keys).to match_array(expected_keys)
     end
 
-    it "includes the animation_enabled flag in the hash" do
-      expect(configuration.to_h[:animation_enabled]).to be true
+    it "preserves default profile width value" do
+      expect(config.to_h[:profile_width]).to eq(350)
     end
 
-    it "includes the correct template_paths in the hash" do
-      expect(configuration.to_h[:template_paths]).to eq([])
+    it "preserves default line count value" do
+      expect(config.to_h[:line_count]).to eq(4)
+    end
+
+    it "reflects modified values in hash output" do
+      config.profile_width = 500
+      expect(config.to_h[:profile_width]).to eq(500)
     end
   end
 end
+# rubocop:enable RSpec/NestedGroups

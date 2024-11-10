@@ -13,31 +13,25 @@ module SkeletonLoader
     def initialize(template_path, options = {})
       @template_path = template_path
 
-      template_name = extract_template_name(template_path)
-
+      # Merge base configuration with user options
       config = SkeletonLoader.configuration.to_h
-      template_defaults = SkeletonLoader::TemplateDefaults.for_template(template_name)
+      @options = config.merge(options)
 
-      @options = config.merge(template_defaults).merge(options)
-
+      # Set instance variables
       @options.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
     end
 
     def render
-      template = File.read(@template_path)
-      erb = ERB.new(template)
-      result = erb.result(binding)
-      ActionController::Base.new.helpers.raw(result)
-    end
-
-    private
-
-    def extract_template_name(path)
-      filename = File.basename(path, ".*")
-      filename = filename.delete_prefix("_")
-      filename.split(".").first
+      template_content = File.read(@template_path)
+      erb = ERB.new(template_content)
+      template_binding = binding
+      begin
+        erb.result(template_binding)
+      rescue StandardError => e
+        raise "An error occurred while rendering the template located at #{@template_path}: #{e.message}"
+      end
     end
   end
 end
