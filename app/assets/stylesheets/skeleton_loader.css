@@ -1,69 +1,83 @@
-@keyframes shimmerDiagonal {
+.skeleton-loading {
+    background-color: #e0e0e0;
+    border-radius: 10px!important;
+    overflow: hidden;
+}
+
+/* Animation Keyframes */
+@keyframes skeleton-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes skeleton-flow {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.3; }
+    100% { opacity: 0.6; }
+}
+
+@keyframes skeleton-shine {
+    0% { background-position: -201% center; }
+    100% { background-position: 198% center; }
+}
+
+@keyframes skeleton-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes skeleton-neon {
     0% {
-        transform: translateX(550%) skewX(-40deg) translateY(70%);
-        opacity: 1;
+        background: #e0e0e0;
+        box-shadow: 0 0 5px rgba(224, 224, 224, 0.5);
     }
-    40% {
-        transform: translateX(-80%) skewX(-40deg);
+    50% {
+        background: #e8e8e8;
+        box-shadow: 0 0 15px rgba(224, 224, 224, 0.8);
+    }
+    100% {
+        background: #e0e0e0;
+        box-shadow: 0 0 5px rgba(224, 224, 224, 0.5);
+    }
+}
+
+@keyframes skeleton-breathing {
+    0%, 100% {
+        transform: scale(1);
         opacity: 0.7;
     }
     50% {
-        transform: translateX(-95%) skewX(-40deg);
-        opacity: 0.7;
+        transform: scale(1.02);
+        opacity: 0.9;
     }
-    100% {
-        transform: translateX(-400%) skewX(-5deg) translateY(-70%);
-        opacity: 0.7;
-    }
-}
-.animation-shimmer-diagonal::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 150%;
-    width: 40%;
-    background-color: hsla(0, 0%, 100%, 0.55);
-    filter: blur(30px);
-    animation: shimmerDiagonal 2.2s infinite;
-    z-index: 1;
-}
-.animation-shimmer-diagonal {
-    position: relative;
-    overflow: hidden;
 }
 
-
-@keyframes shimmerGradient {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
+/* Animation Classes */
+.sl-pulse {
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
 }
-.animation-shimmer-gradient::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-image: linear-gradient(
-            76deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.2) 20%,
-            rgba(255, 255, 255, 0.5) 60%,
-            rgba(255, 255, 255, 0.2) 80%,
-            rgba(255, 255, 255, 0) 100%
-    );
+
+.sl-flow {
+    animation: skeleton-flow 2s ease-in-out infinite;
+}
+
+.sl-shine {
+    background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 76%);
     background-size: 200% 100%;
-    animation: shimmerGradient 1.5s infinite;
-}
-.animation-shimmer-gradient {
-    position: relative;
-    overflow: hidden;
+    animation: skeleton-shine 1.5s ease-in-out infinite;
 }
 
+.sl-gradient {
+    background: linear-gradient(-45deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+    background-size: 400% 400%;
+    animation: skeleton-gradient 2s ease-in-out infinite;
+}
 
+.sl-neon {
+    animation: skeleton-neon 2s ease-in-out infinite;
+}
 
+.sl-breathing {
+    animation: skeleton-breathing 2s ease-in-out infinite;
+}
