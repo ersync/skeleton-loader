@@ -1,32 +1,38 @@
 class SkeletonLoader {
-  static SKELETON_CLASS = 'skeleton-loader';
+  static SKELETON_CLASS = 'skeleton-loader--static';
   static CONTENT_ID_ATTR = 'data-content-id';
 
-  #contentsDisplayStyles = new Map();
+  contentsDisplayStyles = {};
+
+  // ============= PUBLIC API =============
 
   // Start the loader and initialize event listeners
   start() {
-    this.#setupInitialLoading();
-    this.#setupContentsSwap();
+    this.setupInitialLoading();
+    this.setupContentsSwap();
     return this;
   }
 
-  // Private: Setup initial state on DOM load
-  #setupInitialLoading() {
+  // ============= CORE PROCESSING =============
+
+  // Setup initial loading states for skeletons on DOM load
+  setupInitialLoading() {
     document.addEventListener('DOMContentLoaded', () => {
-      this.#captureContentsDisplayStyles();
-      this.#hideContents()
-      this.#showSkeletons();
+      this.captureContentsDisplayStyles();
+      this.hideContents();
+      this.showSkeletons();
     });
   }
 
-  // Private: Handle contents swap on full page load
-  #setupContentsSwap() {
-    window.addEventListener('load', () => this.#revealContent());
+  // Swap skeletons with content on full page load
+  setupContentsSwap() {
+    window.addEventListener('load', async() => await this.revealContent());
   }
 
-  // Private: Store original display styles of contents elements
-  #captureContentsDisplayStyles() {
+  // ============= CONTENT MANAGEMENT =============
+
+  // Store the original display styles of content elements for later restoration
+  captureContentsDisplayStyles() {
     const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
       const contentId = skeleton.getAttribute(SkeletonLoader.CONTENT_ID_ATTR);
@@ -34,45 +40,46 @@ class SkeletonLoader {
 
       if (content) {
         const originalDisplay = getComputedStyle(content).display || 'block';
-        this.#contentsDisplayStyles.set(contentId, originalDisplay);
+        this.contentsDisplayStyles[contentId] = originalDisplay;
       } else {
         console.warn(`Content element with id "${contentId}" not found`);
       }
     });
   }
 
-  // Private: Display skeleton loading states
-  #showSkeletons() {
+  // Show skeleton loading elements by setting their display property
+  showSkeletons() {
     const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
-      skeleton.style.display = 'block'; // Show skeletons
+      skeleton.style.display = 'block';
     });
   }
 
-  // Private: Swap skeletons with actual contents
-  #revealContent() {
-    this.#hideSkeletons();
-    this.#showContents();
+  // Reveal content by swapping skeletons with actual content elements
+  async revealContent() {
+    await new Promise(resolve => setTimeout(resolve, 13000)) // Shorter delay
+    this.hideSkeletons();
+    this.showContents();
   }
 
-  // Private: Hide skeleton elements
-  #hideSkeletons() {
+  // Hide skeleton loading elements once content is ready to be shown
+  hideSkeletons() {
     const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
-      skeleton.style.display = 'none'; // Hide skeletons
+      skeleton.style.display = 'none';
     });
   }
 
-  // Private: Show actual contents elements
-  #showContents() {
+  // Display actual content elements by restoring their original display styles
+  showContents() {
     const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
       const contentId = skeleton.getAttribute(SkeletonLoader.CONTENT_ID_ATTR);
       const content = document.getElementById(contentId);
 
       if (content) {
-        const originalDisplay = this.#contentsDisplayStyles.get(contentId) || 'block';
-        content.style.display = originalDisplay; // Restore original display style
+        const originalDisplay = this.contentsDisplayStyles[contentId] || 'block';
+        content.style.display = originalDisplay;
         content.style.visibility = 'visible'; // Ensure content is visible
       } else {
         console.warn(`Content element with id "${contentId}" not found`);
@@ -80,24 +87,21 @@ class SkeletonLoader {
     });
   }
 
-  // Private: Hide actual contents elements
-
-  #hideContents() {
+  // Hide content elements initially to be replaced with skeleton loaders
+  hideContents() {
     const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
       const contentId = skeleton.getAttribute(SkeletonLoader.CONTENT_ID_ATTR);
       const content = document.getElementById(contentId);
 
       if (content) {
-        content.style.display = 'none'; // Restore original display style
+        content.style.display = 'none';
       } else {
         console.warn(`Content element with id "${contentId}" not found`);
       }
     });
   }
-
-
-
 }
 
+// Initialize and start the SkeletonLoader
 new SkeletonLoader().start();
