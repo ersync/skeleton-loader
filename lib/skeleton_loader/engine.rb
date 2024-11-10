@@ -19,16 +19,15 @@ module SkeletonLoader
       end
     end
 
-    initializer 'skeleton_loader.append_routes' do |app|
+    initializer "skeleton_loader.append_routes" do |app|
       app.routes.prepend do
         mount SkeletonLoader::Engine, at: "/skeleton_loader", as: "skeleton_loader_engine"
       end
     end
 
-    initializer "skeleton_loader.append_migrations" do |app|
+    initializer "skeleton_loader.append_migrations" do
       # This is crucial - it tells the engine where to find controllers
-      config.paths["app/controllers"] << File.expand_path("../../app/controllers", __FILE__)
+      config.paths["app/controllers"] << File.expand_path("../app/controllers", __dir__)
     end
-
   end
 end
