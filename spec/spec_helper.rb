@@ -3,6 +3,8 @@
 ENV["RAILS_ENV"] ||= "test"
 require "rails"
 require "action_controller"
+require "action_view"
+require "active_support/core_ext/string/inflections" # for helper methods like blank?
 require "rails/generators"
 require "skeleton_loader"
 require "pry"
