@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skeleton Loader Demo</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React and ReactDOM -->
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+    <style>
+        /* Animation keyframes */
+        @keyframes shine {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes flow {
+            0% { opacity: 0.6; }
+            50% { opacity: 0.3; }
+            100% { opacity: 0.6; }
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes diagonal {
+            0% { transform: translateX(-100%) rotate(-45deg); }
+            50% { transform: translateX(0%) rotate(-45deg); }
+            100% { transform: translateX(100%) rotate(-45deg); }
+        }
+
+        /* Animation classes */
+        .animate-shine {
+            background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+            background-size: 200% 100%;
+            animation: shine 1.5s ease-in-out infinite;
+        }
+
+        .animate-flow {
+            animation: flow 2s ease-in-out infinite;
+        }
+
+        .animate-gradient {
+            background: linear-gradient(-45deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+            background-size: 400% 400%;
+            animation: gradient 2s ease-in-out infinite;
+        }
+
+        .animate-diagonal {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animate-diagonal::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: diagonal 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-center">Skeleton Loader Demo</h1>
+    <div id="root"></div>
+</div>
+
+<script type="text/babel">
+  const Select = ({ value, onChange, options, label }) => (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    >
+      {options.map(option => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
+
+  const SkeletonDemo = () => {
+    const [template, setTemplate] = React.useState('card');
+    const [animation, setAnimation] = React.useState('sk-pulse');
+
+    const getAnimationClass = (animation) => {
+      switch(animation) {
+        case 'sk-pulse': return 'animate-pulse';
+        case 'sk-flow': return 'animate-flow';
+        case 'sk-shine': return 'animate-shine';
+        case 'sk-gradient': return 'animate-gradient';
+        case 'sk-diagonal': return 'animate-diagonal';
+        default: return 'animate-pulse';
+      }
+    };
+
+    const baseSkeletonStyle = `bg-gray-200 ${getAnimationClass(animation)}`;
+
+    const renderTemplate = () => {
+      switch (template) {
+        case 'card':
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="w-full">
+                  <div className={`${baseSkeletonStyle} h-48 mb-4 rounded-lg`} />
+                  <div className={`${baseSkeletonStyle} h-4 w-3/4 mb-2 rounded`} />
+                  <div className={`${baseSkeletonStyle} h-4 w-1/2 rounded`} />
+                </div>
+              ))}
+            </div>
+          );
+
+        case 'product':
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[1, 2].map(i => (
+                <div key={i} className="flex gap-4">
+                  <div className={`${baseSkeletonStyle} w-32 h-32 rounded-lg flex-shrink-0`} />
+                  <div className="flex-grow">
+                    <div className={`${baseSkeletonStyle} h-4 w-3/4 mb-3 rounded`} />
+                    <div className={`${baseSkeletonStyle} h-4 w-1/2 mb-3 rounded`} />
+                    <div className={`${baseSkeletonStyle} h-4 w-1/4 rounded`} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+
+        case 'paragraph':
+          return (
+            <div className="space-y-3">
+              <div className={`${baseSkeletonStyle} h-4 w-full rounded`} />
+              <div className={`${baseSkeletonStyle} h-4 w-5/6 rounded`} />
+              <div className={`${baseSkeletonStyle} h-4 w-4/6 rounded`} />
+              <div className={`${baseSkeletonStyle} h-4 w-3/4 rounded`} />
+            </div>
+          );
+
+        case 'gallery':
+          return (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className={`${baseSkeletonStyle} aspect-square rounded-lg`} />
+              ))}
+            </div>
+          );
+
+        default: // default template
+          return (
+            <div className="space-y-4">
+              <div className={`${baseSkeletonStyle} h-8 w-3/4 rounded`} />
+              <div className={`${baseSkeletonStyle} h-32 rounded-lg`} />
+              <div className={`${baseSkeletonStyle} h-4 w-1/2 rounded`} />
+            </div>
+          );
+      }
+    };
+
+    return (
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Template
+            </label>
+            <Select
+              value={template}
+              onChange={setTemplate}
+              options={[
+                { value: 'card', label: 'Card Template' },
+                { value: 'product', label: 'Product Template' },
+                { value: 'paragraph', label: 'Paragraph Template' },
+                { value: 'gallery', label: 'Gallery Template' },
+                { value: 'default', label: 'Default Template' },
+              ]}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Animation
+            </label>
+            <Select
+              value={animation}
+              onChange={setAnimation}
+              options={[
+                { value: 'sk-pulse', label: 'Pulse' },
+                { value: 'sk-flow', label: 'Flow' },
+                { value: 'sk-shine', label: 'Shine' },
+                { value: 'sk-gradient', label: 'Gradient' },
+                { value: 'sk-diagonal', label: 'Diagonal' },
+              ]}
+            />
+          </div>
+        </div>
+
+        {renderTemplate()}
+      </div>
+    );
+  };
+
+  ReactDOM.render(<SkeletonDemo />, document.getElementById('root'));
+</script>
+</body>
+</html>
