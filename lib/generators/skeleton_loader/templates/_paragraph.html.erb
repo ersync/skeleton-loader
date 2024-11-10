@@ -1,33 +1,17 @@
-<div class="mx-auto overflow-hidden"
-     style="
-     width:<%= @width %>;
-       padding:<%= @padding %>;
-       <%= "border: #{@border_width} solid #{@border_color};" if @border_color.present? %>;
-       border-radius:<%= @border_radius %>;
-     ">
-  <div class="space-y-4 overflow-hidden"
-       style="animation-duration:<%= @animation_duration %>;">
-    <div class="h-4 rounded overflow-hidden w-1/3<%= @animation_enabled ? " #{@animation_type}" : '' %>" style="background-color:<%= @background_color %>; border-radius:<%= @border_radius %>;">
-      <div class="h-full overflow-hidden">
-        <div></div>
-      </div>
-    </div>
-    <div class="space-y-2">
-      <div class="h-4 rounded<%= @animation_enabled ? " #{@animation_type}" : '' %>" style="background-color:<%= @background_color %>; border-radius:<%= @border_radius %>;">
-        <div class="h-full overflow-hidden">
-          <div></div>
-        </div>
-      </div>
-      <div class="h-4 rounded w-5/6<%= @animation_enabled ? " #{@animation_type}" : '' %>" style="background-color:<%= @background_color %>; border-radius:<%= @border_radius %>;">
-        <div class="h-full overflow-hidden">
-          <div></div>
-        </div>
-      </div>
-      <div class="h-4 rounded w-2/3<%= @animation_enabled ? " #{@animation_type}" : '' %>" style="background-color:<%= @background_color %>; border-radius:<%= @border_radius %>;">
-        <div class="h-full overflow-hidden">
-          <div></div>
-        </div>
-      </div>
-    </div>
+<%
+  scaled_width = @base_width * @container_scale
+%>
+
+<div class="skeleton-paragraph" style="
+padding: <%= 16 * @container_scale %>px;
+  width: <%= scaled_width %>px;
+">
+  <div style="display: flex; flex-direction: column; gap: <%= 12 * @container_scale %>px;">
+    <% @line_count.to_i.times do |i| %>
+      <div class="skeleton-loading <%= @animation_type %>" style="
+      height: <%= 20 * @container_scale %>px;
+        width: <%= [100, 83, 67, 75][i % 4] %>%;
+      "></div>
+    <% end %>
   </div>
 </div>

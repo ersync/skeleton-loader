@@ -1,21 +1,19 @@
-<div class="grid grid-cols-3 gap-4"
-     style="
-     width:<%= @width %>;
-       height:<%= @height %>;
-       padding:<%= @padding %>;
-       margin:<%= @margin %>;
-       <%= "border: #{@border_width} solid #{@border_color};" if @border_color.present? %>;
-       border-radius:<%= @border_radius %>;
-     ">
-  <% @item_count.times do %>
-    <div class="shrink-0 h-40 rounded-lg overflow-hidden <%= @animation_enabled ? " #{@animation_type}" : '' %>"
-         style="background-color:<%= @background_color %>;
-           border-radius:<%= @border_radius %>;
-           animation-duration:<%= @animation_duration %>;"
-         aria-label="<%= @aria_label %>">
-      <div class="h-full">
-        <div></div>
-      </div>
-    </div>
-  <% end %>
+<%
+  total_width = (@base_width * @image_per_row) + (16 * (@image_per_row - 1))
+  scaled_width = total_width * @container_scale
+%>
+
+<div class="skeleton-gallery" style="
+padding: <%= 16 * @container_scale %>px;
+  width: <%= scaled_width %>px;
+">
+  <div style="
+  display: grid;
+    grid-template-columns: repeat(<%= @image_per_row %>, <%= @base_width * @container_scale %>px);
+    gap: <%= 16 * @container_scale %>px;
+  ">
+    <% @image_count.to_i.times do %>
+      <div class="skeleton-loading <%= @animation_type %>" style="padding-bottom: 100%;"></div>
+    <% end %>
+  </div>
 </div>

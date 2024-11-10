@@ -1,0 +1,28 @@
+<%
+  total_width = (@base_width * @profile_per_row) + (24 * (@profile_per_row - 1))
+  scaled_width = total_width * @container_scale
+%>
+
+<div class="skeleton-user-profile" style="padding: <%= 16 * @container_scale %>px;">
+  <div style="
+  display: grid;
+    grid-template-columns: repeat(<%= @profile_per_row %>, <%= @base_width * @container_scale %>px);
+    gap: <%= 24 * @container_scale %>px;
+    width: <%= scaled_width %>px;
+  ">
+    <% @profile_count.to_i.times do %>
+      <div style="display: flex; gap: <%= 16 * @container_scale %>px;">
+        <div class="skeleton-loading <%= @animation_type %>" style="
+        width: <%= 128 * @container_scale %>px;
+          height: <%= 128 * @container_scale %>px;
+          flex-shrink: 0;
+        "></div>
+        <div style="flex-grow: 1;">
+          <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 16 * @container_scale %>px; width: 75%; margin-bottom: <%= 12 * @container_scale %>px;"></div>
+          <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 16 * @container_scale %>px; width: 50%; margin-bottom: <%= 12 * @container_scale %>px;"></div>
+          <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 16 * @container_scale %>px; width: 25%;"></div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

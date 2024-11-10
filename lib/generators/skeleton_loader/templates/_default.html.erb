@@ -1,0 +1,14 @@
+<%
+  scaled_width = @base_width * @container_scale
+%>
+
+<div class="skeleton-default" style="
+padding: <%= 16 * @container_scale %>px;
+  width: <%= scaled_width %>px;
+">
+  <div style="display: flex; flex-direction: column; gap: <%= 16 * @container_scale %>px;">
+    <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 32 * @container_scale %>px; width: 75%;"></div>
+    <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 128 * @container_scale %>px; width: 100%;"></div>
+    <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 16 * @container_scale %>px; width: 50%;"></div>
+  </div>
+</div>

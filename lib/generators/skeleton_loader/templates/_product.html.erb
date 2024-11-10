@@ -1,40 +1,49 @@
-<div class="rounded-lg shadow-sm overflow-hidden w-full mx-auto"
-     style="width:<%= @width %>;
-       height:<%= @height %>;
-       margin:<%= @margin %>;
-       border-radius:<%= @border_radius %>;
-       <%= "border: #{@border_width} solid #{@border_color};" if @border_color.present? %>;
-     ">
+<%
+  total_width = (@base_width * @product_per_row) + (24 * (@product_per_row - 1))
 
-  <div class="flex flex-col"
-       style="animation-duration:<%= @animation_duration %>;">
-    <div class="h-full">
-      <div></div>
-    </div>
+  # Apply container scale
+  scaled_width = total_width * @container_scale
+%>
 
-    <div class="overflow-hidden bg-gray-300 h-64 w-full <%= @animation_enabled ? " #{@animation_type}" : '' %>"
-         style="background-color:<%= @background_color %>;
-         ">
-    </div>
+<div class="skeleton-product" style="
+width: <%= scaled_width %>px;
+  padding: <%= 16 * @container_scale %>px;
+">
+  <div style="
+  display: grid;
+    grid-template-columns: repeat(<%= @product_per_row %>, <%= @base_width * @container_scale %>px);
+    gap: <%= 24 * @container_scale %>px;
+  ">
+    <% @product_count.to_i.times do %>
+      <div style="display: flex; flex-direction: column;">
+        <!-- Main image area -->
+        <div class="skeleton-loading <%= @animation_type %>" style="
+        height: <%= 256 * @container_scale %>px;
+          width: 100%;
+          margin-bottom: <%= 16 * @container_scale %>px;
+        "></div>
 
-    <div class="p-4 space-y-3">
-      <div class="flex justify-between items-center">
-        <div class="w-full space-y-3">
-          <div class="overflow-hidden h-5 bg-gray-300 rounded w-1/2 <%= @animation_enabled ? " #{@animation_type}" : '' %>"
-               style="background-color:<%= @background_color %>;
-                 border-radius:<%= @border_radius %>;">
+        <!-- Content area -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: <%= 12 * @container_scale %>px;">
+          <div style="width: 100%; display: flex; flex-direction: column; gap: <%= 12 * @container_scale %>px;">
+            <div class="skeleton-loading <%= @animation_type %>" style="
+            height: <%= 20 * @container_scale %>px;
+              width: 50%;
+            "></div>
+
+            <div class="skeleton-loading <%= @animation_type %>" style="
+            height: <%= 14 * @container_scale %>px;
+              width: 66%;
+            "></div>
           </div>
 
-          <div class="overflow-hidden h-3 bg-gray-300 rounded w-2/3 <%= @animation_enabled ? " #{@animation_type}" : '' %>"
-               style="background-color:<%= @background_color %>;
-                 border-radius:<%= @border_radius %>;">
-          </div>
-        </div>
-        <div class="overflow-hidden h-6 bg-gray-300 rounded w-1/4 <%= @animation_enabled ? " #{@animation_type}" : '' %>"
-             style="background-color:<%= @background_color %>;
-               border-radius:<%= @border_radius %>;">
+          <!-- Price area -->
+          <div class="skeleton-loading <%= @animation_type %>" style="
+          height: <%= 24 * @container_scale %>px;
+            width: 25%;
+          "></div>
         </div>
       </div>
-    </div>
+    <% end %>
   </div>
 </div>
