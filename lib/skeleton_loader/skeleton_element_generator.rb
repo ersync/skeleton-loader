@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module SkeletonLoader
+  # Generates a skeleton loader HTML element with content based on options or block
   class SkeletonElementGenerator
     class << self
       def generate(content_id:, options: {}, context: :view, &block)
@@ -16,24 +19,26 @@ module SkeletonLoader
       end
 
       def generate_content(options, &block)
-        if block_given?
-          raise Error, "Options cannot be used with a block" unless options.empty?
+        content = if block_given?
+                    raise Error, "Options cannot be used with a block" unless options.empty?
 
-          block.call.html_safe
-        else
-          type = options[:type] || "default"
-          template_path = TemplatePathFinder.find(type)
-          TemplateRenderer.render(template_path, options).html_safe
-        end
+                    block.call
+                  else
+                    type = options[:type] || "default"
+                    template_path = TemplatePathFinder.find(type)
+                    TemplateRenderer.render(template_path, options)
+                  end
+
+        SkeletonSanitizer.sanitize(content)
       end
 
       def wrap_content(content, content_id, css_class)
         ActionController::Base.helpers.content_tag(
           :div,
-          content.html_safe,
+          content,
           class: css_class,
           data: { content_id: content_id }
-        ).html_safe
+        )
       end
     end
   end
