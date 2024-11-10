@@ -4,11 +4,11 @@ module SkeletonLoader
   module Generators
     # Copies default templates to app/views/skeleton_loader and
     # creates the necessary initializer file.
-    class InstallGenerator < Rails::Generators::Base
+    class AddTemplateGenerator < Rails::Generators::Base
       source_root File.expand_path("templates", __dir__)
-      desc "Installs SkeletonLoader default templates and configuration"
+      desc "Installs SkeletonLoader default templates"
 
-      def copy_templates
+      def add_template
         directory ".", "app/views/skeleton_loader"
       end
     end
