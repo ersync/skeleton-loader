@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# SimpleCov must be at the very top, before any other requires
 require "simplecov"
 SimpleCov.start do
   add_filter "/spec/"
@@ -14,7 +13,6 @@ SimpleCov.start do
   track_files "{app,lib}/**/*.rb"
 end
 
-# Rest of your requires after SimpleCov setup
 ENV["RAILS_ENV"] ||= "test"
 require "rails"
 require "action_controller"
@@ -23,6 +21,7 @@ require "active_support/core_ext/string/inflections"
 require "rails/generators"
 require "skeleton_loader"
 require "pry"
+require File.expand_path("../app/controllers/skeleton_loader/skeleton_loader_controller", File.dirname(__FILE__))
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = ".rspec_status"

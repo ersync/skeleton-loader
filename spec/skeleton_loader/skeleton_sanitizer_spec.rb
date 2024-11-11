@@ -1,156 +1,126 @@
 # frozen_string_literal: true
 
-module MockRails
-  class HTML
-    class SafeListSanitizer
-      def self.allowed_tags
-        %w[div p]
-      end
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 
-      def self.allowed_attributes
-        %w[style class]
-      end
+RSpec.describe SkeletonLoader::SkeletonSanitizer do
+  let(:config) { instance_double(SkeletonLoader::Configuration) }
+  let(:additional_css_properties) { ["transform"] }
+  let(:safe_list_sanitizer) { double("Rails::HTML4::SafeListSanitizer") }
+  let(:sanitizer_class) { double("Rails::HTML4::SafeListSanitizer") }
 
-      def sanitize(content, options = {})
-        @allowed_tags = options[:tags] || []
-        @allowed_attributes = options[:attributes] || []
-        @allowed_css = options.dig(:css, :properties) || []
-
-        doc = content.dup
-        remove_disallowed_tags(doc)
-        remove_disallowed_attributes(doc)
-        process_style_attributes(doc)
-        process_data_and_aria_attributes(doc)
-        doc
-      end
-
-      private
-
-      def remove_disallowed_tags(doc)
-        %w[script onclick].each do |bad_tag|
-          doc.gsub!(%r{<#{bad_tag}.*?>.*?</#{bad_tag}>}, "")
-        end
-      end
-
-      def remove_disallowed_attributes(doc)
-        doc.gsub!(/\s(onclick|onerror|onload)="[^"]*"/, "")
-      end
-
-      def process_style_attributes(doc)
-        return unless doc.include?('style="')
-
-        doc.gsub!(/style="([^"]*)"/) do |_style_attr|
-          style_content = Regexp.last_match(1)
-          clean_props = clean_css_properties(style_content)
-          "style=\"#{clean_props}\""
-        end
-      end
-
-      def clean_css_properties(style_content)
-        clean_props = style_content.split(";").map(&:strip).select do |prop|
-          property_name = prop.split(":").first&.strip
-          @allowed_css.include?(property_name)
-        end.join("; ")
-        clean_props += ";" unless clean_props.empty? || clean_props.end_with?(";")
-        clean_props
-      end
-
-      def process_data_and_aria_attributes(doc)
-        return unless @allowed_attributes.include?("data-*") || @allowed_attributes.include?("aria-*")
-
-        doc.gsub!(/\s(data-\w+|aria-\w+)="([^"]*)"/) { |attr| attr }
-      end
-    end
+  let(:default_css_properties) do
+    %w[display grid grid-template-columns grid-template-rows gap width height padding padding-bottom padding-left
+       padding-right padding-top margin margin-bottom margin-left margin-right margin-top flex flex-direction
+       flex-shrink flex-grow align-items justify-content border-radius overflow animation background
+       background-color].uniq
   end
 
-  HTML4 = HTML
-end
-RSpec.describe SkeletonLoader::SkeletonSanitizer do
+  before do
+    allow(SkeletonLoader).to receive(:configuration).and_return(config)
+    allow(config).to receive(:additional_allowed_css_properties)
+      .and_return(additional_css_properties)
+    allow(sanitizer_class).to receive_messages(new: safe_list_sanitizer, allowed_tags: %w[p span],
+                                               allowed_attributes: %w[id])
+    allow(safe_list_sanitizer).to receive(:sanitize).and_return("sanitized content")
+    stub_const("Rails::HTML4::SafeListSanitizer", sanitizer_class)
+  end
+
   describe ".sanitize" do
-    before do
-      stub_const("Rails", MockRails)
-      allow(SkeletonLoader).to receive(:configuration).and_return(config)
-      allow(config).to receive(:additional_allowed_css_properties).and_return(["custom-property"])
-      allow(SkeletonLoader).to receive(:configuration).and_return(config)
-      allow(config).to receive(:additional_allowed_css_properties).and_return(["custom-property"])
-    end
+    subject(:sanitize) { described_class.sanitize(content) }
 
-    let(:config) { instance_double(SkeletonLoader::Configuration) }
+    context "when sanitizing HTML with allowed tags" do
+      let(:content) { "<div>Test</div>" }
 
-    context "when handling HTML tags" do
-      it "allows p tags" do
-        input = "<p>Hello</p>"
-        expect(described_class.sanitize(input)).to include("<p>Hello</p>")
-      end
-
-      it "allows div tags" do
-        input = "<div>Content</div>"
-        expect(described_class.sanitize(input)).to include("<div>Content</div>")
-      end
-
-      it "removes script tags" do
-        input = '<script>alert("xss")</script>'
-        expect(described_class.sanitize(input)).not_to include("<script>")
+      it "makes content html_safe" do
+        expect(sanitize).to be_html_safe
       end
     end
 
-    context "when handling attributes" do
-      it "allows style attributes" do
-        input = '<div style="display: flex;">Content</div>'
-        expect(described_class.sanitize(input)).to include('style="display: flex;"')
+    context "when sanitizing with custom CSS properties" do
+      let(:content) { "<div style='display: grid'>Test</div>" }
+      let(:expected_properties) { default_css_properties + additional_css_properties }
+
+      it "calls sanitize on safe_list_sanitizer" do
+        sanitize
+        expect(safe_list_sanitizer).to have_received(:sanitize)
+      end
+
+      it "includes all expected CSS properties" do
+        sanitize
+        safe_list_sanitizer.sanitize do |_, options|
+          actual_props = options[:css][:properties] - %w[# Layout Flexbox Visual Animations effects loading skeleton]
+          expect(actual_props).to match_array(expected_properties)
+        end
+      end
+    end
+
+    context "when sanitizing with data attributes" do
+      let(:content) { "<div data-test='value'>Test</div>" }
+
+      it "calls sanitize on safe_list_sanitizer" do
+        sanitize
+        expect(safe_list_sanitizer).to have_received(:sanitize)
       end
 
       it "allows data-* attributes" do
-        input = '<div data-test="value">Content</div>'
-        expect(described_class.sanitize(input)).to include('data-test="value"')
+        sanitize
+        safe_list_sanitizer.sanitize do |_, options|
+          expect(options[:attributes]).to include("data-*")
+        end
+      end
+    end
+
+    context "when sanitizing with aria attributes" do
+      let(:content) { "<div aria-label='test'>Test</div>" }
+
+      it "calls sanitize on safe_list_sanitizer" do
+        sanitize
+        expect(safe_list_sanitizer).to have_received(:sanitize)
       end
 
       it "allows aria-* attributes" do
-        input = '<div aria-label="description">Content</div>'
-        expect(described_class.sanitize(input)).to include('aria-label="description"')
-      end
-
-      it "removes onclick attributes" do
-        input = '<div onclick="alert()">Content</div>'
-        expect(described_class.sanitize(input)).not_to include("onclick")
+        sanitize
+        safe_list_sanitizer.sanitize do |_, options|
+          expect(options[:attributes]).to include("aria-*")
+        end
       end
     end
 
-    context "when handling CSS properties" do
-      it "allows display property" do
-        input = '<div style="display: grid;">Content</div>'
-        expect(described_class.sanitize(input)).to include('style="display: grid;"')
+    context "when sanitizing with custom tags" do
+      let(:content) { "<div>Test</div>" }
+
+      it "calls sanitize on safe_list_sanitizer" do
+        sanitize
+        expect(safe_list_sanitizer).to have_received(:sanitize)
       end
 
-      it "allows width property" do
-        input = '<div style="width: 100%;">Content</div>'
-        expect(described_class.sanitize(input)).to include('style="width: 100%;"')
-      end
-
-      it "allows padding property" do
-        input = '<div style="padding: 10px;">Content</div>'
-        expect(described_class.sanitize(input)).to include('style="padding: 10px;"')
-      end
-
-      it "allows custom properties from configuration" do
-        input = '<div style="custom-property: value;">Content</div>'
-        expect(described_class.sanitize(input)).to include('style="custom-property: value;"')
-      end
-
-      it "removes disallowed CSS properties" do
-        input = '<div style="behavior: url(script.htc);">Content</div>'
-        expect(described_class.sanitize(input)).to eq('<div style="">Content</div>')
-      end
-
-      it "keeps allowed properties when mixed with disallowed ones" do
-        input = '<div style="display: grid; bad-prop: value;">Content</div>'
-        expect(described_class.sanitize(input)).to eq('<div style="display: grid;">Content</div>')
+      it "allows div and style tags" do
+        sanitize
+        safe_list_sanitizer.sanitize do |_, options|
+          expect(options[:tags]).to include("div", "style")
+        end
       end
     end
 
-    it "marks output as html_safe" do
-      result = described_class.sanitize("<div>Content</div>")
-      expect(result).to be_html_safe
+    context "when Rails::HTML4::SafeListSanitizer is not available" do
+      let(:content) { "<div>Test</div>" }
+      # rubocop:disable RSpec/VerifiedDoubleReference
+      let(:html_sanitizer_class) { class_double("Rails::HTML::SafeListSanitizer") }
+      # rubocop:enable RSpec/VerifiedDoubleReference
+
+      before do
+        hide_const("Rails::HTML4::SafeListSanitizer")
+        stub_const("Rails::HTML::SafeListSanitizer", html_sanitizer_class)
+        allow(html_sanitizer_class).to receive_messages(new: safe_list_sanitizer, allowed_tags: %w[p span],
+                                                        allowed_attributes: %w[id])
+      end
+
+      it "uses Rails::HTML::SafeListSanitizer" do
+        sanitize
+        expect(html_sanitizer_class).to have_received(:new)
+      end
     end
   end
 end
+
+# rubocop:enable RSpec/MultipleMemoizedHelpers

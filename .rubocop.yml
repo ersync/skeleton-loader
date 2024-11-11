@@ -36,6 +36,12 @@ Metrics/BlockLength:
 Layout/LineLength:
   Max: 120
 
+Metrics/ModuleLength:
+  Max: 150
+
+Rails/ApplicationController:
+  Enabled: false
+
 RSpec/SpecFilePathFormat:
   Enabled: false
 
