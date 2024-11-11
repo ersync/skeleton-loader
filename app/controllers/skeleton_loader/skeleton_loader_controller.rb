@@ -2,7 +2,7 @@
 
 module SkeletonLoader
   # Handles async requests to generate and render loading skeletons
-  class SkeletonLoaderController < ApplicationController
+  class SkeletonLoaderController < ActionController::Base
     def show
       content_id = params[:content_id]
       mode = params[:mode]
