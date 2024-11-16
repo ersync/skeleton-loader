@@ -1,52 +1,61 @@
 <%
-  scaled_width = @base_width * @container_scale
+  total_width = (@width * @per_row) + (16 * (@per_row - 1))
+  scaled_width = total_width * @scale
 %>
 
-<div class="skeleton-comment" style="
-width: <%= scaled_width %>px;
-  padding: <%= 16 * @container_scale %>px;
-">
+<div class="skeleton-comments" style="padding: <%= 16 * @scale %>px;">
   <div style="
-  display: flex;
-    align-items: flex-start;
-    gap: <%= 16 * @container_scale %>px;
+  display: grid;
+    grid-template-columns: repeat(<%= @per_row %>, <%= @width * @scale %>px);
+    gap: <%= 16 * @scale %>px;
+    width: <%= scaled_width %>px;
   ">
-    <!-- Avatar circle -->
-    <div class="skeleton-loading <%= @animation_type %>" style="
-    border-radius: 50%;
-      height: <%= 48 * @container_scale %>px;
-      width: <%= 48 * @container_scale %>px;
-      flex-shrink: 0;
-    "></div>
+    <% @count.to_i.times do %>
+      <div class="skeleton-comment" style="width: 100%;">
+        <div style="
+        display: flex;
+          align-items: flex-start;
+          gap: <%= 16 * @scale %>px;
+        ">
+          <!-- Avatar circle -->
+          <div class="skeleton-loading <%= @animation_type %>" style="
+          border-radius: 50%;
+            height: <%= 48 * @scale %>px;
+            width: <%= 48 * @scale %>px;
+            flex-shrink: 0;
+          "></div>
 
-    <!-- Content area -->
-    <div style="flex: 1;">
-      <!-- Username -->
-      <div class="skeleton-loading <%= @animation_type %>" style="
-      height: <%= 16 * @container_scale %>px;
-        width: 25%;
-        margin-bottom: <%= 8 * @container_scale %>px;
-      "></div>
+          <!-- Content area -->
+          <div style="flex: 1;">
+            <!-- Username -->
+            <div class="skeleton-loading <%= @animation_type %>" style="
+            height: <%= 16 * @scale %>px;
+              width: 25%;
+              margin-bottom: <%= 8 * @scale %>px;
+            "></div>
 
-      <!-- Comment text lines -->
-      <div style="
-      display: flex;
-        flex-direction: column;
-        gap: <%= 8 * @container_scale %>px;
-      ">
-        <div class="skeleton-loading <%= @animation_type %>" style="
-        height: <%= 16 * @container_scale %>px;
-          width: 100%;
-        "></div>
-        <div class="skeleton-loading <%= @animation_type %>" style="
-        height: <%= 16 * @container_scale %>px;
-          width: 83%;
-        "></div>
-        <div class="skeleton-loading <%= @animation_type %>" style="
-        height: <%= 16 * @container_scale %>px;
-          width: 67%;
-        "></div>
+            <!-- Comment text lines -->
+            <div style="
+            display: flex;
+              flex-direction: column;
+              gap: <%= 8 * @scale %>px;
+            ">
+              <div class="skeleton-loading <%= @animation_type %>" style="
+              height: <%= 16 * @scale %>px;
+                width: 100%;
+              "></div>
+              <div class="skeleton-loading <%= @animation_type %>" style="
+              height: <%= 16 * @scale %>px;
+                width: 83%;
+              "></div>
+              <div class="skeleton-loading <%= @animation_type %>" style="
+              height: <%= 16 * @scale %>px;
+                width: 67%;
+              "></div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    <% end %>
   </div>
 </div>

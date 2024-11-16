@@ -1,14 +1,23 @@
 <%
-  scaled_width = @base_width * @container_scale
+  total_width = (@width * @per_row) + (16 * (@per_row - 1))
+  scaled_width = total_width * @scale
 %>
 
 <div class="skeleton-default" style="
-padding: <%= 16 * @container_scale %>px;
+padding: <%= 16 * @scale %>px;
   width: <%= scaled_width %>px;
 ">
-  <div style="display: flex; flex-direction: column; gap: <%= 16 * @container_scale %>px;">
-    <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 32 * @container_scale %>px; width: 75%;"></div>
-    <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 128 * @container_scale %>px; width: 100%;"></div>
-    <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 16 * @container_scale %>px; width: 50%;"></div>
+  <div style="
+  display: grid;
+    grid-template-columns: repeat(<%= @per_row %>, <%= @width * @scale %>px);
+    gap: <%= 16 * @scale %>px;
+  ">
+    <% @count.to_i.times do %>
+      <div style="display: flex; flex-direction: column; gap: <%= 10 * @scale %>px;">
+        <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 26 * @scale %>px; width: 75%;"></div>
+        <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 128 * @scale %>px; width: 100%;"></div>
+        <div class="skeleton-loading <%= @animation_type %>" style="height: <%= 16 * @scale %>px; width: 50%;"></div>
+      </div>
+    <% end %>
   </div>
 </div>

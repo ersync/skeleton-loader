@@ -1,45 +1,45 @@
 <%
-  total_width = (@base_width * @product_per_row) + (24 * (@product_per_row - 1))
+  total_width = (@width * @per_row) + (24 * (@per_row - 1))
 
   # Apply container scale
-  scaled_width = total_width * @container_scale
+  scaled_width = total_width * @scale
 %>
 
 <div class="skeleton-product" style="
 width: <%= scaled_width %>px;
-  padding: <%= 16 * @container_scale %>px;
+  padding: <%= 16 * @scale %>px;
 ">
   <div style="
   display: grid;
-    grid-template-columns: repeat(<%= @product_per_row %>, <%= @base_width * @container_scale %>px);
-    gap: <%= 24 * @container_scale %>px;
+    grid-template-columns: repeat(<%= @per_row %>, <%= @width * @scale %>px);
+    gap: <%= 16 * @scale %>px;
   ">
-    <% @product_count.to_i.times do %>
+    <% @count.to_i.times do %>
       <div style="display: flex; flex-direction: column;">
         <!-- Main image area -->
         <div class="skeleton-loading <%= @animation_type %>" style="
-        height: <%= 256 * @container_scale %>px;
+        height: <%= 256 * @scale %>px;
           width: 100%;
-          margin-bottom: <%= 16 * @container_scale %>px;
+          margin-bottom: <%= 16 * @scale %>px;
         "></div>
 
         <!-- Content area -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: <%= 12 * @container_scale %>px;">
-          <div style="width: 100%; display: flex; flex-direction: column; gap: <%= 12 * @container_scale %>px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: <%= 12 * @scale %>px;">
+          <div style="width: 100%; display: flex; flex-direction: column; gap: <%= 12 * @scale %>px;">
             <div class="skeleton-loading <%= @animation_type %>" style="
-            height: <%= 20 * @container_scale %>px;
+            height: <%= 20 * @scale %>px;
               width: 50%;
             "></div>
 
             <div class="skeleton-loading <%= @animation_type %>" style="
-            height: <%= 14 * @container_scale %>px;
+            height: <%= 14 * @scale %>px;
               width: 66%;
             "></div>
           </div>
 
           <!-- Price area -->
           <div class="skeleton-loading <%= @animation_type %>" style="
-          height: <%= 24 * @container_scale %>px;
+          height: <%= 24 * @scale %>px;
             width: 25%;
           "></div>
         </div>

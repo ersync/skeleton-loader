@@ -1,33 +1,29 @@
 <%
-  total_width = (@base_width * @card_per_row) + (16 * (@card_per_row - 1))
-  scaled_width = total_width * @container_scale
+  total_width = (@width * @per_row) + (16 * (@per_row - 1))
+  scaled_width = total_width * @scale
 %>
 
-<div class="skeleton-card" style="padding: <%= 16 * @container_scale %>px;">
-  <div style="
+<div id="f1" class="skeleton-card" style="padding: <%= 16 * @scale %>px;">
+  <div id="f2" style="
   display: grid;
-    grid-template-columns: repeat(<%= @card_per_row %>, <%= @base_width * @container_scale %>px);
-    gap: <%= 16 * @container_scale %>px;
+    grid-template-columns: repeat(<%= @per_row %>, <%= @width * @scale %>px);
+    gap: <%= 16 * @scale %>px;
     width: <%= scaled_width %>px;
   ">
-    <% @card_count.to_i.times do %>
-      <div style="width: 100%;">
-        <div class="skeleton-loading <%= @animation_type %>" style="
-        height: <%= 240 * @container_scale %>px;
-          border-radius: 6px;
-          overflow: hidden;
-          margin-bottom: <%= 16 * @container_scale %>px;
+    <% @count.to_i.times do %>
+      <div id="f3" style="width: 100%;">
+        <div id="f4" class="skeleton-loading <%= @animation_type %>" style="
+        height: <%= 240 * @scale %>px;
+          margin-bottom: <%= 16 * @scale %>px;
         "></div>
-        <div class="skeleton-loading <%= @animation_type %>" style="
-        height: <%= 20 * @container_scale %>px;
+        <div id="f5" class="skeleton-loading <%= @animation_type %>" style="
+        height: <%= 20 * @scale %>px;
           width: 50%;
-          border-radius: 6px;
-          margin-bottom: <%= 8 * @container_scale %>px;
+          margin-bottom: <%= 8 * @scale %>px;
         "></div>
         <div class="skeleton-loading <%= @animation_type %>" style="
-        height: <%= 20 * @container_scale %>px;
+        height: <%= 20 * @scale %>px;
           width: 30%;
-          border-radius: 6px;
         "></div>
       </div>
     <% end %>

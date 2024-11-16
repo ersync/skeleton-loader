@@ -1,17 +1,28 @@
 <%
-  scaled_width = @base_width * @container_scale
+  Rails.logger.debug("FFFFFFF")
+  Rails.logger.debug(@width)
+  Rails.logger.debug(@per_row)
+  Rails.logger.debug(@count)
+  total_width = (@width * @per_row) + (16 * (@per_row - 1))
+  scaled_width = total_width * @scale
 %>
 
-<div class="skeleton-paragraph" style="
-padding: <%= 16 * @container_scale %>px;
-  width: <%= scaled_width %>px;
-">
-  <div style="display: flex; flex-direction: column; gap: <%= 12 * @container_scale %>px;">
-    <% @line_count.to_i.times do |i| %>
-      <div class="skeleton-loading <%= @animation_type %>" style="
-      height: <%= 20 * @container_scale %>px;
-        width: <%= [100, 83, 67, 75][i % 4] %>%;
-      "></div>
+<div class="skeleton-paragraph" style="display:inline-block; padding: <%= 16 * @scale %>px;">
+  <div style="
+  display: grid;
+    grid-template-columns: repeat(<%= @per_row %>, <%= @width * @scale %>px);
+    gap: <%= 24 * @scale %>px;
+    width: <%= scaled_width %>px;
+  ">
+    <% @count.to_i.times do %>
+      <div style="display: flex; flex-direction: column; gap: <%= 12 * @scale %>px;">
+        <% 4.times do |i| %>
+          <div class="skeleton-loading <%= @animation_type %>" style="
+          height: <%= 20 * @scale %>px;
+            width: <%= [100, 83, 67, 75][i % 4] %>%;
+          "></div>
+        <% end %>
+      </div>
     <% end %>
   </div>
 </div>
