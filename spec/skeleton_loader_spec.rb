@@ -8,8 +8,16 @@ RSpec.describe SkeletonLoader do
   end
 
   describe ".configure" do
-    it "yields the Configuration instance to the block" do
-      expect { |b| described_class.configure(&b) }.to yield_with_args(described_class.configuration)
+    context "when a block is provided" do
+      it "yields the Configuration instance to the block" do
+        expect { |b| described_class.configure(&b) }.to yield_with_args(described_class.configuration)
+      end
+    end
+
+    context "when no block is provided" do
+      it "does not raise an error" do
+        expect { described_class.configure }.not_to raise_error
+      end
     end
   end
 

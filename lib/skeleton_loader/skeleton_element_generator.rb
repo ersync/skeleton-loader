@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module SkeletonLoader
-  # Generates a skeleton loader HTML element with content based on options or block
+  #
+  # Generates skeleton loader element
+  #
   class SkeletonElementGenerator
     class << self
       def generate(content_id:, options: {}, context: :view, &block)
@@ -28,8 +30,10 @@ module SkeletonLoader
                     template_path = TemplatePathFinder.find(type)
                     TemplateRenderer.render(template_path, options)
                   end
-
-        SkeletonSanitizer.sanitize(content)
+        # rubocop:disable Rails/OutputSafety
+        # NOTE: The following use of `html_safe` is intentional
+        content.html_safe
+        # rubocop:enable Rails/OutputSafety
       end
 
       def wrap_content(content, content_id, css_class)

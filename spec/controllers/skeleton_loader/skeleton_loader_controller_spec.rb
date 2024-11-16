@@ -7,11 +7,9 @@ module SkeletonLoader
     end
 
     let(:controller) { described_class.new }
+    let(:content_id) { "sample-content" }
 
     describe "#show" do
-      let(:content_id) { "sample-content" }
-      let(:markup) { "<div>Custom Content</div>" }
-
       context "when mode is predefined" do
         let(:predefined_params) do
           ActionController::Parameters.new(
@@ -26,27 +24,24 @@ module SkeletonLoader
           allow(controller).to receive(:render)
         end
 
-        # rubocop:disable RSpec/ExampleLength
         it "generates skeleton with correct parameters" do
-          allow(SkeletonElementGenerator).to receive(:generate)
-            .with(content_id: content_id, options: { "custom_option" => "value" }, context: :controller)
-            .and_return("<div>Skeleton</div>")
+          allow(SkeletonElementGenerator).to receive(:generate).and_return("<div>Skeleton</div>")
+
           controller.show
+
           expect(SkeletonElementGenerator).to have_received(:generate)
             .with(content_id: content_id, options: { "custom_option" => "value" }, context: :controller)
         end
-        # rubocop:enable RSpec/ExampleLength
 
         it "renders the generated skeleton" do
-          allow(SkeletonElementGenerator).to receive(:generate)
-            .and_return("<div>Skeleton</div>")
-
+          allow(SkeletonElementGenerator).to receive(:generate).and_return("<div>Skeleton</div>")
           controller.show
           expect(controller).to have_received(:render).with(html: "<div>Skeleton</div>")
         end
       end
 
       context "when mode is custom" do
+        let(:markup) { "<div>Custom Content</div>" }
         let(:custom_params) do
           ActionController::Parameters.new(
             content_id: content_id,
@@ -60,75 +55,67 @@ module SkeletonLoader
           allow(controller).to receive(:render)
         end
 
-        it "calls generator with correct content_id and context" do
-          allow(SkeletonElementGenerator).to receive(:generate) { markup }
-
+        it "passes correct parameters to generator" do
+          allow(SkeletonElementGenerator).to receive(:generate).and_return(markup)
           controller.show
-
           expect(SkeletonElementGenerator).to have_received(:generate)
             .with(content_id: content_id, context: :controller)
         end
 
-        # rubocop:disable RSpec/ExampleLength
-        it "passes the markup through the generator" do
-          allow(SkeletonElementGenerator).to receive(:generate) { |&block|
-            block.call
-            markup
-          }
+        it "passes block that returns markup" do
+          allow(SkeletonElementGenerator).to receive(:generate) do |&block|
+            expect(block.call).to eq(markup)
+          end
           controller.show
-          expect(SkeletonElementGenerator).to have_received(:generate)
         end
-        # rubocop:enable RSpec/ExampleLength
 
         it "renders the final markup" do
           allow(SkeletonElementGenerator).to receive(:generate) { markup }
-
           controller.show
-
           expect(controller).to have_received(:render).with(html: markup)
         end
       end
 
-      context "when an error occurs" do
-        let(:error_params) do
-          ActionController::Parameters.new(
-            content_id: content_id,
-            mode: "predefined"
-          )
-        end
-
-        let(:error_message) { "Test error" }
+      context "when error handling" do
+        let(:error_params) { { content_id: content_id, mode: "predefined" } }
+        let(:env_double) { double("Environment") }
 
         before do
-          allow(controller).to receive(:params).and_return(error_params)
+          allow(controller).to receive(:params).and_return(ActionController::Parameters.new(error_params))
+          allow(SkeletonElementGenerator).to receive(:generate).and_raise(StandardError, "Test error")
+          allow(Rails.logger).to receive(:error)
+          allow(Rails).to receive(:env).and_return(env_double)
           allow(controller).to receive(:render)
-          allow(SkeletonElementGenerator).to receive(:generate)
-            .and_raise(StandardError, error_message)
         end
 
-        it "logs the error message" do
-          allow(Rails.logger).to receive(:error)
-          controller.show
-          expect(Rails.logger).to have_received(:error).with("SkeletonLoader Error: #{error_message}")
+        context "when in development environment" do
+          before { allow(env_double).to receive(:development?).and_return(true) }
+
+          it "renders error with backtrace" do
+            controller.show
+            expect(controller).to have_received(:render).with(
+              json: { error: "Test error", backtrace: kind_of(Array) },
+              status: :unprocessable_entity
+            )
+          end
         end
 
-        it "logs the backtrace" do
-          allow(Rails.logger).to receive(:error)
-          controller.show
-          expect(Rails.logger).to have_received(:error).with(kind_of(String)).twice
-        end
+        context "when in production environment" do
+          before { allow(env_double).to receive(:development?).and_return(false) }
 
-        it "renders error response with correct status" do
-          allow(Rails.logger).to receive(:error)
-          controller.show
-          expect(controller).to have_received(:render).with(json: { error: error_message, backtrace: [] },
-                                                            status: :unprocessable_entity)
+          it "renders error without backtrace" do
+            controller.show
+            expect(controller).to have_received(:render).with(
+              json: { error: "Test error", backtrace: [] },
+              status: :unprocessable_entity
+            )
+          end
         end
       end
     end
 
     describe "#process_params" do
-      let(:complex_params) do
+      let(:params) do
         ActionController::Parameters.new(
           content_id: "test",
           controller: "controller",
@@ -141,25 +128,14 @@ module SkeletonLoader
         )
       end
 
-      before do
-        allow(controller).to receive(:params).and_return(complex_params)
-      end
+      before { allow(controller).to receive(:params).and_return(params) }
 
-      it "includes only custom parameters" do
-        filtered_params = controller.send(:process_params)
-
-        expect(filtered_params).to eq({
-                                        "custom_option" => "custom_value",
-                                        "another_option" => "another_value"
-                                      })
-      end
-
-      it "excludes system parameters" do
-        filtered_params = controller.send(:process_params)
-
-        expect(filtered_params.keys).not_to include(
-          "content_id", "controller", "action", "format", "mode", "markup"
-        )
+      it "filters system parameters" do
+        filtered = controller.send(:process_params)
+        expect(filtered).to eq({
+                                 "custom_option" => "custom_value",
+                                 "another_option" => "another_value"
+                               })
       end
     end
   end

@@ -2,12 +2,22 @@
 
 RSpec.describe SkeletonLoader::TemplateRenderer do
   let(:template_path) { "spec/fixtures/test_template.html.erb" }
-  let(:options) { { width: "200px" } }
-  let(:config) { { height: "100px" } }
+  let(:options) { { type: :card, width: 400 } }
+  let(:configuration) do
+    instance_double(
+      SkeletonLoader::Configuration,
+      base_options: { scale: 1.0, animation_type: "sl-gradient" },
+      template_defaults_for: { width: 200, count: 3, per_row: 3 }
+    )
+  end
 
   before do
-    allow(SkeletonLoader).to receive(:configuration)
-      .and_return(double(to_h: config))
+    allow(SkeletonLoader).to receive(:configuration).and_return(configuration)
+    FileUtils.mkdir_p("spec/fixtures")
+  end
+
+  after do
+    FileUtils.rm_rf("spec/fixtures")
   end
 
   describe ".render" do
@@ -22,37 +32,37 @@ RSpec.describe SkeletonLoader::TemplateRenderer do
       allow(instance).to receive(:render)
     end
 
-    it "delegates rendering to a new instance" do
+    it "creates new instance with correct parameters" do
       render_template
-      expect(instance).to have_received(:render)
+      expect(described_class).to have_received(:new).with(template_path, options)
+    end
+  end
+
+  describe "#initialize" do
+    subject(:renderer) { described_class.new(template_path, options) }
+
+    it "sets template path" do
+      expect(renderer.instance_variable_get(:@template_path)).to eq(template_path)
+    end
+
+    it "merges configuration options" do
+      expect(renderer.instance_variable_get(:@scale)).to eq(1.0)
     end
   end
 
   describe "#render" do
     subject(:renderer) { described_class.new(template_path, options) }
 
-    before do
-      FileUtils.mkdir_p("spec/fixtures")
-    end
-
-    after do
-      FileUtils.rm_rf("spec/fixtures")
-    end
-
     context "with valid template" do
       before do
         File.write(
           template_path,
-          '<div style="width: <%= @width %>; height: <%= @height %>">Test</div>'
+          '<div data-scale="<%= @scale %>"><%= @width %></div>'
         )
       end
 
-      it "includes configured width" do
-        expect(renderer.render).to include("width: 200px")
-      end
-
-      it "includes configured height" do
-        expect(renderer.render).to include("height: 100px")
+      it "renders template with correct values" do
+        expect(renderer.render).to include('data-scale="1.0"')
       end
     end
 
@@ -62,9 +72,29 @@ RSpec.describe SkeletonLoader::TemplateRenderer do
       end
 
       it "raises error with template path" do
-        error_message = /An error occurred while rendering the template located at #{template_path}/
-        expect { renderer.render }.to raise_error(RuntimeError, error_message)
+        expect { renderer.render }
+          .to raise_error(/Error rendering template at #{template_path}/)
       end
+    end
+  end
+
+  describe "private #merge_options" do
+    subject(:renderer) { described_class.new(template_path, options) }
+
+    before do
+      allow(configuration).to receive(:template_defaults_for)
+        .with(:card)
+        .and_return(width: 200, count: 3, per_row: 3)
+    end
+
+    it "combines base options with template defaults" do
+      merged_options = renderer.send(:merge_options, options)
+      expect(merged_options[:width]).to eq(400)
+    end
+
+    it "includes configuration base options" do
+      merged_options = renderer.send(:merge_options, options)
+      expect(merged_options[:scale]).to eq(1.0)
     end
   end
 end

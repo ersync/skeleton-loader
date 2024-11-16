@@ -39,6 +39,9 @@ Layout/LineLength:
 Metrics/ModuleLength:
   Max: 150
 
+RSpec/NestedGroups:
+  Max: 4
+
 Rails/ApplicationController:
   Enabled: false
 

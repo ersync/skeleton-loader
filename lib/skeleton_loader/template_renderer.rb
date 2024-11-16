@@ -12,12 +12,9 @@ module SkeletonLoader
 
     def initialize(template_path, options = {})
       @template_path = template_path
+      @options = merge_options(options)
 
-      # Merge base configuration with user options
-      config = SkeletonLoader.configuration.to_h
-      @options = config.merge(options)
-
-      # Set instance variables
+      # Dynamically set instance variables for template rendering
       @options.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
@@ -26,12 +23,19 @@ module SkeletonLoader
     def render
       template_content = File.read(@template_path)
       erb = ERB.new(template_content)
-      template_binding = binding
-      begin
-        erb.result(template_binding)
-      rescue StandardError => e
-        raise "An error occurred while rendering the template located at #{@template_path}: #{e.message}"
-      end
+      erb.result(binding)
+    rescue StandardError => e
+      raise "Error rendering template at #{@template_path}: #{e.message}"
+    end
+
+    private
+
+    def merge_options(options)
+      config = SkeletonLoader.configuration
+
+      config.base_options
+            .merge(config.template_defaults_for(options[:type]))
+            .merge(options)
     end
   end
 end
