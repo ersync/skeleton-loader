@@ -75,6 +75,12 @@ class SkeletonLoaderClient {
   }
 
   displaySkeleton(skeleton, content) {
+    const existingSkeleton = content.previousElementSibling;
+    if (existingSkeleton && existingSkeleton.classList.contains('skeleton-loader')) {
+      existingSkeleton.remove();
+    }
+
+    skeleton.classList.add('skeleton-loader');
     skeleton.style.display = "block";
     content.parentNode.insertBefore(skeleton, content);
   }
