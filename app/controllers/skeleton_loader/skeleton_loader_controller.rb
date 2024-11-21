@@ -32,9 +32,19 @@ module SkeletonLoader
     end
 
     def process_params
-      params.to_unsafe_h
-            .except("content_id", "controller", "action", "format", "mode", "markup")
-            .transform_keys(&:to_sym)
+      params_to_process = params.to_unsafe_h
+                                .except("controller", "action", "format", "content_id", "mode", "markup")
+                                .transform_keys(&:to_sym)
+
+      convert_numeric_params(params_to_process)
+      params_to_process
+    end
+
+    def convert_numeric_params(params)
+      %i[scale count width per_row].each do |key|
+        params[key] = params[key].to_f if key == :scale && params[key]
+        params[key] = params[key].to_i if %i[count width per_row].include?(key) && params[key]
+      end
     end
 
     def handle_error(error)

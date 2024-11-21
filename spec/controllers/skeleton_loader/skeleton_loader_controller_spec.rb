@@ -26,9 +26,7 @@ module SkeletonLoader
 
         it "generates skeleton with correct parameters" do
           allow(SkeletonElementGenerator).to receive(:generate).and_return("<div>Skeleton</div>")
-
           controller.show
-
           expect(SkeletonElementGenerator).to have_received(:generate)
             .with(content_id: content_id, options: { "custom_option" => "value" }, context: :controller)
         end
@@ -122,20 +120,59 @@ module SkeletonLoader
           action: "action",
           format: "json",
           mode: "predefined",
-          markup: "<div></div>",
           custom_option: "custom_value",
-          another_option: "another_value"
+          scale: "1.5",
+          count: "10",
+          width: "300",
+          per_row: "4"
         )
       end
 
       before { allow(controller).to receive(:params).and_return(params) }
 
-      it "filters system parameters" do
+      it "removes the :controller key" do
         filtered = controller.send(:process_params)
-        expect(filtered).to eq({
-                                 "custom_option" => "custom_value",
-                                 "another_option" => "another_value"
-                               })
+        expect(filtered).not_to have_key(:controller)
+      end
+
+      it "removes the :action key" do
+        filtered = controller.send(:process_params)
+        expect(filtered).not_to have_key(:action)
+      end
+
+      it "removes the :format key" do
+        filtered = controller.send(:process_params)
+        expect(filtered).not_to have_key(:format)
+      end
+
+      it "removes the :content_id key" do
+        filtered = controller.send(:process_params)
+        expect(filtered).not_to have_key(:content_id)
+      end
+
+      it "converts :scale to a float" do
+        filtered = controller.send(:process_params)
+        expect(filtered[:scale]).to eq(1.5)
+      end
+
+      it "converts :count to an integer" do
+        filtered = controller.send(:process_params)
+        expect(filtered[:count]).to eq(10)
+      end
+
+      it "converts :width to an integer" do
+        filtered = controller.send(:process_params)
+        expect(filtered[:width]).to eq(300)
+      end
+
+      it "converts :per_row to an integer" do
+        filtered = controller.send(:process_params)
+        expect(filtered[:per_row]).to eq(4)
+      end
+
+      it "keeps custom options unchanged" do
+        filtered = controller.send(:process_params)
+        expect(filtered[:custom_option]).to eq("custom_value")
       end
     end
   end
