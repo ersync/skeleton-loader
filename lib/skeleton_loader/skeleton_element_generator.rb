@@ -10,7 +10,7 @@ module SkeletonLoader
         validate_content_id!(content_id)
         content = generate_content(options, &block)
 
-        css_class = context == :controller ? "skeleton-loader--ajax" : "skeleton-loader--static"
+        css_class = context == :controller ? "skeleton-loader--client" : "skeleton-loader--server"
         wrap_content(content, content_id, css_class)
       end
 
