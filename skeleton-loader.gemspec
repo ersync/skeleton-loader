@@ -20,9 +20,18 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "https://github.com/ersync/skeleton-loader/blob/main/CHANGELOG.md"
 
   # Files to be included in the gem
-  spec.files = Dir.chdir(__dir__) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{\A(?:test|spec|features)/}) }
-  end
+  spec.files = Dir[
+    "lib/**/*",
+    "app/**/*",
+    "config/**/*",
+    "README.md",
+    "LICENSE.txt"
+  ] - %w[
+    package.json
+    package-lock.json
+    yarn.lock
+    node_modules/**/*
+  ]
   spec.require_paths = ["lib"]
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
