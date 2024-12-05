@@ -1,8 +1,18 @@
-class SkeletonLoader {
-  static SKELETON_CLASS = 'skeleton-loader--static';
-  static CONTENT_ID_ATTR = 'data-content-id';
+export class ServerSkeletonLoader {
+  constructor() {
+    this.SKELETON_CLASS = 'skeleton-loader--server';
+    this.CONTENT_ID_ATTR = 'data-content-id';
+    this.contentsDisplayStyles = {};
+  }
 
-  contentsDisplayStyles = {};
+  // Instead of class fields, move static properties inside the class
+  static get SKELETON_CLASS() {
+    return 'skeleton-loader--server';
+  }
+
+  static get CONTENT_ID_ATTR() {
+    return 'data-content-id';
+  }
 
   // ============= PUBLIC API =============
 
@@ -33,9 +43,9 @@ class SkeletonLoader {
 
   // Store the original display styles of content elements for later restoration
   captureContentsDisplayStyles() {
-    const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
+    const skeletons = document.querySelectorAll(`.${ServerSkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
-      const contentId = skeleton.getAttribute(SkeletonLoader.CONTENT_ID_ATTR);
+      const contentId = skeleton.getAttribute(ServerSkeletonLoader.CONTENT_ID_ATTR);
       const content = document.getElementById(contentId);
 
       if (content) {
@@ -49,7 +59,7 @@ class SkeletonLoader {
 
   // Show skeleton loading elements by setting their display property
   showSkeletons() {
-    const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
+    const skeletons = document.querySelectorAll(`.${ServerSkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
       skeleton.style.display = 'block';
     });
@@ -57,14 +67,13 @@ class SkeletonLoader {
 
   // Reveal content by swapping skeletons with actual content elements
   async revealContent() {
-    await new Promise(resolve => setTimeout(resolve, 13000)) // Shorter delay
     this.hideSkeletons();
     this.showContents();
   }
 
   // Hide skeleton loading elements once content is ready to be shown
   hideSkeletons() {
-    const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
+    const skeletons = document.querySelectorAll(`.${ServerSkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
       skeleton.style.display = 'none';
     });
@@ -72,9 +81,9 @@ class SkeletonLoader {
 
   // Display actual content elements by restoring their original display styles
   showContents() {
-    const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
+    const skeletons = document.querySelectorAll(`.${ServerSkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
-      const contentId = skeleton.getAttribute(SkeletonLoader.CONTENT_ID_ATTR);
+      const contentId = skeleton.getAttribute(ServerSkeletonLoader.CONTENT_ID_ATTR);
       const content = document.getElementById(contentId);
 
       if (content) {
@@ -89,9 +98,9 @@ class SkeletonLoader {
 
   // Hide content elements initially to be replaced with skeleton loaders
   hideContents() {
-    const skeletons = document.querySelectorAll(`.${SkeletonLoader.SKELETON_CLASS}`);
+    const skeletons = document.querySelectorAll(`.${ServerSkeletonLoader.SKELETON_CLASS}`);
     skeletons.forEach(skeleton => {
-      const contentId = skeleton.getAttribute(SkeletonLoader.CONTENT_ID_ATTR);
+      const contentId = skeleton.getAttribute(ServerSkeletonLoader.CONTENT_ID_ATTR);
       const content = document.getElementById(contentId);
 
       if (content) {
@@ -102,6 +111,3 @@ class SkeletonLoader {
     });
   }
 }
-
-// Initialize and start the SkeletonLoader
-new SkeletonLoader().start();

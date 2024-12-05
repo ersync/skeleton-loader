@@ -1,0 +1,33 @@
+{
+  "name": "@ersync/skeleton-loader",
+  "version": "0.1.0",
+  "browser": "dist/skeleton_loader.js",
+  "module": "dist/skeleton_loader.js",
+  "main": "dist/skeleton_loader.js",
+  "files": ["dist"],
+  "exports": {
+    "import": "./dist/skeleton_loader.js",
+    "require": "./dist/skeleton_loader.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ersync/skeleton-loader.git"
+  },
+  "author": "Emad Rahimi",
+  "license": "MIT",
+  "readme": "README.npm.md",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "prepare": "yarn build"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.x",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-private-methods": "^7.18.6",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.x",
+    "babel-loader": "^8.x",
+    "webpack": "^5.x",
+    "webpack-cli": "^4.x"
+  }
+}

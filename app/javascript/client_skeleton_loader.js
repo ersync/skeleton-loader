@@ -1,10 +1,10 @@
-class ClientSkeletonLoader {
+export default class ClientSkeletonLoader {
   static loadingStates = new Map();
   static activeSkeletons = new Map();
 
   constructor() {
     this.defaultDisplayStyles = {};
-    this.skeletonClass = 'skeleton-loader';
+    this.skeletonClass = 'skeleton-loader--client';
     this.contentRefAttr = 'data-content-id';
     this.apiEndpoint = '/skeleton_loader/templates';
   }
