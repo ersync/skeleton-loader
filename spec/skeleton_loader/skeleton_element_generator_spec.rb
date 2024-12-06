@@ -100,7 +100,7 @@ RSpec.describe SkeletonLoader::SkeletonElementGenerator do
     context "with different contexts" do
       it "adds static class for view context" do
         result = described_class.generate(content_id: content_id) { "content" }
-        expect(result).to include("skeleton-loader--static")
+        expect(result).to include("skeleton-loader--server")
       end
 
       it "adds ajax class for controller context" do
@@ -108,7 +108,7 @@ RSpec.describe SkeletonLoader::SkeletonElementGenerator do
           content_id: content_id,
           context: :controller
         ) { "content" }
-        expect(result).to include("skeleton-loader--ajax")
+        expect(result).to include("skeleton-loader--client")
       end
     end
 

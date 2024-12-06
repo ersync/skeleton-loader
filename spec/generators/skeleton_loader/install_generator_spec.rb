@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "rails/generators"
-require "generators/skeleton_loader/add_template_generator"
+require "generators/skeleton_loader/add_templates_generator"
 require "fileutils"
 
-RSpec.describe SkeletonLoader::Generators::AddTemplateGenerator, type: :generator do
+RSpec.describe SkeletonLoader::Generators::AddTemplatesGenerator, type: :generator do
   let(:destination_root) { File.expand_path("../../../../tmp", __dir__) }
 
   before do

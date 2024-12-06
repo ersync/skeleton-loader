@@ -1,7 +1,8 @@
-# lib/tasks/skeleton_loader_tasks.rake
+# frozen_string_literal: true
+
 namespace :skeleton_loader do
   desc "Build JavaScript for all targets"
-  task :build_js do
+  task build_js: :environment do
     # Run webpack build
     system("yarn build")
 

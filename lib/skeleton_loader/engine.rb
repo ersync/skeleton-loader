@@ -1,4 +1,9 @@
+# frozen_string_literal: true
+
 module SkeletonLoader
+  # SkeletonLoader::Engine integrates the SkeletonLoader gem with Rails,
+  # configuring asset paths, pre-compiling assets, and including view helpers
+  # in Action View.
   class Engine < ::Rails::Engine
     isolate_namespace SkeletonLoader
 
