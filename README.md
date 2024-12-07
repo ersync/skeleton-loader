@@ -1,6 +1,6 @@
 # Skeleton Loader
 
-![Gem Version](https://img.shields.io/badge/gem-v0.1.0-brightgreen)
+[![Gem Version](https://badge.fury.io/rb/skeleton-loader.svg)](https://badge.fury.io/rb/skeleton-loader)
 [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/8MamMcAVAVNWTcUqkjQk7R/Sh2DQkMWqqCv4MFvAmYWDL/tree/main.svg?style=svg&circle-token=CCIPRJ_PF8xu3Svcj2Ro4D8jhjCi7_71b7c0a7c781e09fc7194cd58cca67aecdc111b5)](https://dl.circleci.com/status-badge/redirect/circleci/8MamMcAVAVNWTcUqkjQk7R/Sh2DQkMWqqCv4MFvAmYWDL/tree/main)
 ![Test Coverage: 100%](https://img.shields.io/badge/Test%20Coverage-100%25-brightgreen)
 [![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
@@ -63,9 +63,9 @@ bundle install
 
 ### CSS Assets
 
-The gem's CSS is always managed via the Asset Pipeline:
+The gem's CSS is always managed via the Asset Pipeline. In `app/assets/stylesheets/application.css` add:
+
 ```javascript
-/* app/assets/stylesheets/application.css */
 *= require skeleton_loader
 ```
 
@@ -84,25 +84,27 @@ In `app/assets/javascripts/application.js`, add:
 
 #### **Option 2: Webpack (Default for Rails 6)**
 
-1. Install the package using Yarn:
+Install the package using Yarn:
 
 ```bash
 yarn add "@ersync/skeleton-loader"
 ```
 
 ```javascript
+// In your JavaScript file:
 import SkeletonLoader from "skeleton-loader"
 ```
 
 #### **Option 3: Importmap (Default for Rails 7)**
 
-1. Pin the package in `config/importmap.rb`:
+Pin the package in `config/importmap.rb`:
 
 ```ruby
 pin "skeleton-loader", to: "skeleton_loader.js"
 ```
 
 ```javascript
+// In your JavaScript file:
 import SkeletonLoader from "skeleton-loader"
 ```
 
