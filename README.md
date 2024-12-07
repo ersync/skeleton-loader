@@ -1,6 +1,6 @@
 # Skeleton Loader
 
-![Gem Version](https://img.shields.io/badge/gem-v0.1.0-brightgreen)
+[![Gem Version](https://badge.fury.io/rb/skeleton-loader.svg)](https://badge.fury.io/rb/skeleton-loader)
 [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/8MamMcAVAVNWTcUqkjQk7R/Sh2DQkMWqqCv4MFvAmYWDL/tree/main.svg?style=svg&circle-token=CCIPRJ_PF8xu3Svcj2Ro4D8jhjCi7_71b7c0a7c781e09fc7194cd58cca67aecdc111b5)](https://dl.circleci.com/status-badge/redirect/circleci/8MamMcAVAVNWTcUqkjQk7R/Sh2DQkMWqqCv4MFvAmYWDL/tree/main)
 ![Test Coverage: 100%](https://img.shields.io/badge/Test%20Coverage-100%25-brightgreen)
 [![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
@@ -15,8 +15,8 @@
 
 - [Features](#features)
 - [Installation](#installation)
-- [Setup](#setup)
-- [Rails Integration](#rails-integration)
+- [Quick Start](#quick-start)
+- [Usage](#usage)
 - [JavaScript Integration](#javascript-integration)
 - [Configuration](#configuration)
 - [Code Quality](#code-quality)
@@ -39,104 +39,102 @@
 
 ## Installation
 
-Add this line to your application’s Gemfile:
+To install Skeleton Loader, add the following line to your Gemfile:
 
 ```ruby
 gem "skeleton-loader"
 ```
 
-Then, run:
+Then, execute:
 
 ```bash
 bundle install
 ```
 
-#### Requirements
+### Requirements
 
-- **Ruby** 2.5 or higher
-- **Rails** 5.0 or higher
-- **Asset Pipeline** (Required for CSS handling)
-
----
-
-## Setup
-
-### CSS Assets
-
-The gem's CSS is always managed via the Asset Pipeline:
-```javascript
-/* app/assets/stylesheets/application.css */
-*= require skeleton_loader
-```
-
-### JavaScript Assets
-
-Include the JavaScript functionality using Asset Pipeline, Webpack, or Importmap, depending on your setup:
-
-
-#### **Option 1: Asset Pipeline (Default for Rails 5)**
-
-In `app/assets/javascripts/application.js`, add:
-
-```javascript
-//= require skeleton_loader
-```
-
-#### **Option 2: Webpack (Default for Rails 6)**
-
-1. Install the package using Yarn:
-
-```bash
-yarn add "@ersync/skeleton-loader"
-```
-
-```javascript
-import SkeletonLoader from "skeleton-loader"
-```
-
-#### **Option 3: Importmap (Default for Rails 7)**
-
-1. Pin the package in `config/importmap.rb`:
-
-```ruby
-pin "skeleton-loader", to: "skeleton_loader.js"
-```
-
-```javascript
-import SkeletonLoader from "skeleton-loader"
-```
+- Ruby 2.5 or higher
+- Rails 5.0 or higher
+- Asset Pipeline (for CSS handling)
 
 ### Install Templates
 
-To install predefined templates, run:
+Add predefined templates to your app with:
 
 ```bash
 rails generate skeleton_loader:add_templates
-```  
+```
 
-This adds templates to `app/views/skeleton_loader/`. Customize them as needed.
+This command will place templates in `app/views/skeleton_loader/`, which you can customize as needed. 
 
-To restore defaults later:
+And in case needed, you can revert to default templates by running:
 
 ```bash
 rails generate skeleton_loader:reset_templates
-```  
+```
 
 ---
 
-## Rails Integration
+## Quick Start
 
-The gem provides a primary view helper, `skeleton_loader`, which generates a skeleton that is automatically replaced with content once loading completes. You can use it with predefined templates or define your own HTML blocks.
+Quickly integrate Skeleton Loader into your Rails app with these steps:
 
-```ruby
-skeleton_loader(
-        content_id:,         # Required. Target element ID for replacement
-        **options,           # Optional. Customize the template
-        &block               # Optional. Define custom skeleton HTML (excludes type/options)
-)
-```
+1. **Include Assets**
 
-### 1. Pre-defined Templates
+   - **Rails 7 (Import Maps)**:
+     - In `config/importmap.rb`, add:
+       ```ruby
+       pin "skeleton-loader", to: "skeleton_loader.js"
+       ```
+     - In your JavaScript entry file, add:
+       ```javascript
+       import SkeletonLoader from "skeleton-loader"
+       ```
+    - In `app/assets/stylesheets/application.css`, add:
+        ```css
+        *= require skeleton_loader
+        ```
+   - **Rails 6 (Webpack)**:
+     - Run:
+       ```bash
+       npm install "@ersync/skeleton-loader"
+       ```
+     - In your JavaScript entry file, add:
+       ```javascript
+       import SkeletonLoader from "skeleton-loader"
+       ```
+
+   - **Rails 5 (Asset Pipeline)**:
+     - In `app/assets/javascripts/application.js`, add:
+       ```javascript
+       //= require skeleton_loader
+       ```
+     - In `app/assets/stylesheets/application.css`, add:
+       ```css
+       *= require skeleton_loader
+       ```
+
+2. **Use in Views**
+
+   Use the `skeleton_loader` helper next to the content that loads slowly. Set `content_id` to the target element's ID and choose a `type` for the skeleton template.
+
+   Example:
+   ```erb
+   <div id="content-element">
+     <!-- Content that takes time to load -->
+   </div>
+   <%= skeleton_loader(content_id: 'content-element', type: "card") %>
+   ```
+
+For more detailed instructions, refer to Usage section.
+
+---
+
+## Usage
+
+The gem provides a primary view helper, `skeleton_loader`, which generates a div containing a skeleton next to the targeted content element. This skeleton will be hidden once the content element fully loads, providing a seamless loading experience.
+
+### Pre-defined Templates
 
 Specify `content_id` and, optionally, a template `type` and customization `options`.
 
@@ -148,7 +146,7 @@ Specify `content_id` and, optionally, a template `type` and customization `optio
   animation_type: 'animation-pulse') %>
 ```
 
-### 2. Custom Skeletons with a Block
+### Custom Skeletons with a Block
 
 Define your own HTML structure in a block. Note that `type` and `options` are not used.
 
