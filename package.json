@@ -1,10 +1,16 @@
 {
   "name": "@ersync/skeleton-loader",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "JavaScript component of the Skeleton Loader Rails gem",
+  "license": "MIT",
+  "author": "Emad Rahimi",
+  "readme": "README.npm.md",
   "browser": "dist/skeleton_loader.js",
   "module": "dist/skeleton_loader.js",
   "main": "dist/skeleton_loader.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     "import": "./dist/skeleton_loader.js",
     "require": "./dist/skeleton_loader.js"
@@ -13,12 +19,14 @@
     "type": "git",
     "url": "git+https://github.com/ersync/skeleton-loader.git"
   },
-  "author": "Emad Rahimi",
-  "license": "MIT",
-  "readme": "README.npm.md",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "prepare": "yarn build"
+    "prepare": "yarn build",
+    "prepublishOnly": "cp README.npm.md README.md && yarn build",
+    "postpublish": "git checkout README.md"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@babel/core": "^7.x",
