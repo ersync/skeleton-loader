@@ -127,7 +127,7 @@
             </div>
           );
 
-        case 'product':
+        case 'profile':
           return (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[1, 2].map(i => (
@@ -185,9 +185,9 @@
               onChange={setTemplate}
               options={[
                 { value: 'card', label: 'Card Template' },
-                { value: 'product', label: 'Product Template' },
-                { value: 'paragraph', label: 'Paragraph Template' },
                 { value: 'gallery', label: 'Gallery Template' },
+                { value: 'paragraph', label: 'Paragraph Template' },
+                { value: 'profile', label: 'Profile Template' },
                 { value: 'default', label: 'Default Template' },
               ]}
             />
