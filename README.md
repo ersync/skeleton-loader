@@ -2,6 +2,7 @@
 
 ![Gem Version](https://img.shields.io/badge/gem-v0.1.0-brightgreen)
 [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/8MamMcAVAVNWTcUqkjQk7R/Sh2DQkMWqqCv4MFvAmYWDL/tree/main.svg?style=svg&circle-token=CCIPRJ_PF8xu3Svcj2Ro4D8jhjCi7_71b7c0a7c781e09fc7194cd58cca67aecdc111b5)](https://dl.circleci.com/status-badge/redirect/circleci/8MamMcAVAVNWTcUqkjQk7R/Sh2DQkMWqqCv4MFvAmYWDL/tree/main)
+![Test Coverage: 100%](https://img.shields.io/badge/Test%20Coverage-100%25-brightgreen)
 [![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 **Skeleton Loader** is a Ruby on Rails gem for creating animated placeholders that enhance loading states. Whether rendered through Rails views or dynamically with JavaScript, these skeletons provide a seamless visual experience while content loads.
@@ -50,51 +51,76 @@ Then, run:
 bundle install
 ```
 
-### Requirements
+#### Requirements
 
 - **Ruby** 2.5 or higher
 - **Rails** 5.0 or higher
-- **Asset Pipeline** (Currently supports Asset Pipeline only)
+- **Asset Pipeline** (Required for CSS handling)
 
 ---
 
 ## Setup
 
-### 1. Include Assets
+### CSS Assets
 
-The gem provides both JavaScript functionality and CSS styles. Add these to your asset manifests:
+The gem's CSS is always managed via the Asset Pipeline:
+```javascript
+/* app/assets/stylesheets/application.css */
+*= require skeleton_loader
+```
 
-In `app/assets/javascripts/application.js`:
+### JavaScript Assets
+
+Include the JavaScript functionality using Asset Pipeline, Webpack, or Importmap, depending on your setup:
+
+
+#### **Option 1: Asset Pipeline (Default for Rails 5)**
+
+In `app/assets/javascripts/application.js`, add:
 
 ```javascript
 //= require skeleton_loader
 ```
 
-In `app/assets/stylesheets/application.css`:
+#### **Option 2: Webpack (Default for Rails 6)**
 
-```css
- *= require skeleton_loader
+1. Install the package using Yarn:
+
+```bash
+yarn add "@ersync/skeleton-loader"
 ```
 
-### 2. Install Templates
+```javascript
+import SkeletonLoader from "skeleton-loader"
+```
 
-Skeleton Loader comes with a set of predefined templates. Run the following command to install them:
+#### **Option 3: Importmap (Default for Rails 7)**
+
+1. Pin the package in `config/importmap.rb`:
+
+```ruby
+pin "skeleton-loader", to: "skeleton_loader.js"
+```
+
+```javascript
+import SkeletonLoader from "skeleton-loader"
+```
+
+### Install Templates
+
+To install predefined templates, run:
 
 ```bash
 rails generate skeleton_loader:add_templates
-```
+```  
 
-This will create skeleton templates in `app/views/skeleton_loader/`. You can customize them to match your application's design.
+This adds templates to `app/views/skeleton_loader/`. Customize them as needed.
 
-If you need to restore the original templates at any point:
+To restore defaults later:
 
 ```bash
 rails generate skeleton_loader:reset_templates
-```
-
-- After installation, explore the available templates in `app/views/skeleton_loader/`.
-- Customize the templates to match your UI, if needed.
-- Use the templates in your views with the `skeleton_loader` helper method.
+```  
 
 ---
 
@@ -141,14 +167,16 @@ See [Configuration](#configuration) for all available options.
 
 ## JavaScript Integration
 
-Skeleton Loader provides a JavaScript API to dynamically create loading states independently of Rails views.
+Skeleton Loader also provides a JavaScript API to dynamically create skeletons independently of Rails views.
+
+<details>
+<summary>💡 You only need this API if you're loading content asynchronously i.e. AJAX calls. For standard Rails views, use the Rails helper method instead.</summary>
 
 ### 1. Basic Setup
 
 First, initialize the SkeletonLoader in your JavaScript:
 
 ```javascript
-// In your main JavaScript file
 const skeleton = new SkeletonLoader();
 ```
 
@@ -191,7 +219,8 @@ if (loader.isLoading()) {
 loader.reveal();
 ```
 
-### Practical Examples
+<details>
+<summary><strong>Practical Examples</strong></summary>
 
 Here's some example showing how to use the skeleton loader with an API call:
 
@@ -247,6 +276,9 @@ async function loadDashboard() {
   loaders.activities.reveal();
 }
 ```
+</details>
+</details>
+
 ---
 
 ## Configuration
@@ -343,10 +375,9 @@ Skeleton Loader maintains code quality through:
 
 Here are some features I'd like to add when I have time:
 
-- **HTML Sanitizer**: Adding a dedicated sanitizer for better security in templates.
 - **New Templates & Animations**: Expanding template and animation options.
-- **Vite/Webpack Support**: Extending compatibility beyond the Asset Pipeline.
 - **Turbo & Stimulus Support**: Enhancing compatibility with Rails Turbo and StimulusJS.
+- **Builder Helper for Custom Skeletons:**: Introducing a helper to easily create custom skeletons (e.g., circles, rectangles, etc.) with customizable options, simplifying the process of designing custom skeletons.
 
 Suggestions and contributions are welcome!
 
